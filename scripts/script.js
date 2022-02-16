@@ -12,7 +12,7 @@ function exibirQuizzes() {
 
         resposta.data.forEach(quizz => {
             quizzes.innerHTML += `
-            <article onclick="habilitarTela2(this)" class="quizz">
+            <article id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
                 <div class="degrade"></div>
                 <img src="${quizz.image}" alt="quizz">
                 <p>${quizz.title}</p>
@@ -27,9 +27,65 @@ function exibirQuizzes() {
     })
 }
 
+// Exibe as perguntas do quizz selecionado
 function habilitarTela2(quizz) {
+    const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
+    tela1.classList.add("escondido")
     tela2.classList.remove("escondido")
+
+    const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`)
+
+    promessa.then(resposta => {
+        console.log(resposta.data)
+        const body = document.querySelector("body")
+
+        body.innerHTML += `
+        <div class="banner">
+            <div class="degrade"></div>
+            <img src="${resposta.data.image}" alt="banner">
+            <p>${resposta.data.title}</p>
+        </div>
+        `
+        const tela2 = document.querySelector(".tela-2")
+        let indiceDaPergunta = 1
+        
+        resposta.data.questions.forEach(pergunta => {
+            tela2.innerHTML += `
+            <div id="pergunta_${indiceDaPergunta}" class="pergunta">
+                <div class="pergunta__titulo" style="background-color: ${pergunta.color};">${pergunta.title}</div>
+            </div>
+            `
+            const perguntaAtual = document.getElementById(`pergunta_${indiceDaPergunta}`)
+
+            pergunta.answers = embaralharArray(pergunta.answers)
+
+            pergunta.answers.forEach(resposta => {
+                perguntaAtual.innerHTML += `
+                <div class="pergunta__resposta">
+                    <img src=${resposta.image} alt="">
+                    <p>${resposta.text}</p>
+                </div>
+                `
+            });
+            indiceDaPergunta++
+        });
+    })
+
+    promessa.catch(erro => {
+        console.log(erro)
+        alert("Ops! Não foi possível abrir o quizz.")
+    })
+}
+
+function embaralharArray(minhaArray) {
+    minhaArray.sort(comparador)
+
+    function comparador() { 
+        return Math.random() - 0.5; 
+    }
+
+    return minhaArray
 }
 
 function habilitarTela3() {
