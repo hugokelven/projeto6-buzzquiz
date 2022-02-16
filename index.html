@@ -11,9 +11,27 @@
     <!-- STYLE -->
     <link rel="stylesheet" href="CSS/reset.css">
     <link rel="stylesheet" href="CSS/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <header>BuzzQuizz</header>
+
+    <main>
+        <!-- Tela 1 -->
+        <div class="sem-quizzes-criados">
+            <p>Você não criou nenhum quizz ainda :(</p>
+            <div onclick="habilitarTela3()">Criar Quizz</div>
+        </div>
+
+        <h4>Todos os Quizzes</h4>
+
+        <div class="quizzes"><!-- Carregado no JS --></div>
+
+        <div class="tela-2 escondido"></div>
+
+        <div class="tela-3 escondido"></div>
+    </main>
     
 
     <!-- LIBRARY -->

@@ -1,0 +1,150 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+header {
+    position: sticky;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 69px;
+    font-size: 37px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #EC362D;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+main {
+    width: 1051px;
+    margin: 77px auto;
+}
+
+.sem-quizzes-criados {
+    width: 100%;
+    height: 181px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #D4D4D4;
+}
+.sem-quizzes-criados p {
+    width: 250px;
+    height: 65px;
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+    color: #B9B9B9;
+}
+.sem-quizzes-criados div {
+    width: 151px;
+    height: 40px;
+    font-size: 21px;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #EC362D;
+    border: 1px dashed #EC362D;
+    border-radius: 50px;
+}
+
+.quizzes {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.quizzes * {
+    margin-bottom: 12px;
+}
+
+h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 70px;
+    margin-bottom: 30px;
+}
+
+article {
+    position: relative;
+    width: 340px;
+    height: 181px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+article img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+article p {
+    position: absolute;
+    z-index: 2;
+    bottom: 7px;
+    left: 20px;
+    right: 20px;
+    font-size: 19px;
+    font-weight: 400;
+    overflow-wrap: break-word;
+    color: white;
+}
+
+.degrade {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 12px);
+    border-radius: 5px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5) 64.58%, #000000 100%);
+}
+
+.tela-2 {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.tela-3 {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+/* UTILITÁRIOS */
+
+.escondido {
+    display: none;
+}
+
+/* MEDIA QUERY */
+@media (max-width: 1100px) {
+
+    main {
+        width: 340px;
+        margin: 31px auto;
+    }
+
+    h4 {
+        margin-top: 35px;
+    }
+
+}
