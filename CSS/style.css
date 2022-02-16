@@ -75,7 +75,7 @@ h4 {
     margin-bottom: 30px;
 }
 
-article {
+.quizz {
     position: relative;
     width: 340px;
     height: 181px;
@@ -83,12 +83,12 @@ article {
     flex-direction: column;
     justify-content: end;
 }
-article img {
+.quizz img {
     width: 100%;
     height: 100%;
     border-radius: 5px;
 }
-article p {
+.quizz p {
     position: absolute;
     z-index: 2;
     bottom: 7px;
@@ -120,13 +120,97 @@ article p {
     background-color: white;
 }
 
+/*--- TELA 3 ---*/
+
 .tela-3 {
     position: fixed;
     z-index: 3;
     top: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     height: 100%;
+    margin-top: 69px;
     background-color: white;
+}
+
+/* T3 - Informações */
+
+.informacoes {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FAFAFA;
+}
+
+.informacoes h1 {
+    height: 89px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.informacoes div {
+    height: 256px;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFFFFF;
+}
+
+.informacoes input {
+    height: 46px;
+    width: 95%;
+    font-size: 19px;
+    margin: 0 0 9px;
+    border-radius: 5px;
+    border: 1px solid #D1D1D1;
+    padding: 0 14px;
+}
+
+.informacoes input:first-child {
+    margin-top: 21px;
+}
+
+.informacoes input:last-child {
+    margin-bottom: 21px;
+}
+
+.informacoes input:focus {
+    border: 1px solid #B8B8B8;
+    outline: none;
+}
+
+.informacoes input::placeholder {
+    font-size: 19px;
+    font-style: italic;
+    color: #BABABA;
+}
+
+.informacoes button {
+    width: 324px;
+    height: 54px;
+    border-radius: 15px;
+    margin-top: 5% ;
+    background-color: #EC362D;
+    border: none;
+    font-size: 18px;
+    color: #FFF5F4;
+}
+
+.informacoes p {
+    font-size: 20px;
+    font-weight: 700;
+    color: #EC362D;
+    margin-top: 20px;
 }
 
 /* UTILITÁRIOS */

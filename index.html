@@ -19,18 +19,40 @@
 
     <main>
         <!-- Tela 1 -->
-        <div class="sem-quizzes-criados">
-            <p>Você não criou nenhum quizz ainda :(</p>
-            <div onclick="habilitarTela3()">Criar Quizz</div>
-        </div>
+        <section class="tela-1">
+            <div class="sem-quizzes-criados">
+                <p>Você não criou nenhum quizz ainda :(</p>
+                <div onclick="habilitarTela3()">Criar Quizz</div>
+            </div>
+    
+            <h4>Todos os Quizzes</h4>
+    
+            <div class="quizzes"><!-- Carregado no JS --></div>
+        </section>
 
-        <h4>Todos os Quizzes</h4>
+        <!-- Tela 2 -->
+        <section class="tela-2 escondido"></section>
 
-        <div class="quizzes"><!-- Carregado no JS --></div>
+        <!-- Tela 3 -->
+        <section class="tela-3 escondido">
 
-        <div class="tela-2 escondido"></div>
+            <article class="informacoes">
+                <h1>Comece pelo começo</h1>
+                <div>
+                    <input type="text" id="quizz__titulo" placeholder="Título do seu quizz">
+                    <input type="text" id="quizz__imagemURL" placeholder="URL da imagem do seu quizz">
+                    <input type="text" id="quizz__perguntas" placeholder="Quantidade de perguntas do quizz">
+                    <input type="text" id="quizz__niveis" placeholder="Quantidade de níveis do quizz">
+                </div>
+                <button onclick="validarInformacoes()">Prosseguir para criar perguntas</button>
+                <p></p>
+            </article>
 
-        <div class="tela-3 escondido"></div>
+            <article class="perguntas escondido"></article>
+
+            <article class="niveis escondido"></article>
+
+        </section>
     </main>
     
 
