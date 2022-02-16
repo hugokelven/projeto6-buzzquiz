@@ -135,8 +135,8 @@ function habilitarPerguntas() {
 
 function mostrarPerguntas() {
     for (let i = 1; i <= numero__perguntas; i++) {
-        document.querySelector(".pergunta__geral").innerHTML += `
-        <article class="pergunta">
+        document.querySelector(".criacao__pergunta__geral").innerHTML += `
+        <article class="criacao__pergunta">
     
             <h1>Pergunta ${i}</h1>
             <div>
@@ -171,11 +171,11 @@ function mostrarPerguntas() {
 
 function validarPerguntas() {
     valido = true
-    let teste = document.querySelector(".pergunta__geral").childNodes
+    let teste = document.querySelector(".criacao__pergunta__geral").childNodes
 
     for (let i = 1; i < teste.length; i += 2) {validarPergunta(teste[i])}
 
-    if (valido) {
+    if (valido === true) {
         habilitarNiveis()
     } else {
         document.querySelector(".perguntas p").innerHTML = "Informações inválidas"
@@ -205,8 +205,6 @@ function validarPergunta(pergunta) {
     let incorreta3 = pergunta.childNodes[15].childNodes[1].value
     let incorreta3__url = pergunta.childNodes[15].childNodes[3].value
     let incorreta3__URL = validarURL(incorreta3__url)
-
-    console.log(`${texto__pergunta} ${cor__pergunta} ${correta} ${correta__url} ${incorreta1} ${incorreta1__url} ${incorreta2} ${incorreta2__url} ${incorreta3} ${incorreta3__url}`)
 
     if (texto__pergunta.length >= 20 && cor__valida && correta !== "" && correta__URL && incorreta1 !== "" && incorreta1__URL) {
 
