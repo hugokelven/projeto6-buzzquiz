@@ -198,6 +198,18 @@ h4 {
     align-items: center;
 }
 
+.gabarito.correta {
+    color: #009C22;
+}
+
+.gabarito.errada {
+    color: #FF4B4B;
+}
+
+.esbranquicar {
+    opacity: 0.3;
+}
+
 /*--- TELA 3 ---*/
 
 .tela-3 {

@@ -49,7 +49,7 @@ function habilitarTela2(quizz) {
         `
         const tela2 = document.querySelector(".tela-2")
         let indiceDaPergunta = 1
-        
+
         resposta.data.questions.forEach(pergunta => {
             tela2.innerHTML += `
             <div id="pergunta_${indiceDaPergunta}" class="pergunta">
@@ -61,8 +61,15 @@ function habilitarTela2(quizz) {
             pergunta.answers = embaralharArray(pergunta.answers)
 
             pergunta.answers.forEach(resposta => {
+                let isRespostaCorreta = ""
+                if (resposta.isCorrectAnswer) {
+                    isRespostaCorreta = 'correta'
+                } else {
+                    isRespostaCorreta = 'errada'
+                }
+
                 perguntaAtual.innerHTML += `
-                <div class="pergunta__resposta">
+                <div class="pergunta__resposta ${isRespostaCorreta}" onclick="selecionarResposta(this)">
                     <img src=${resposta.image} alt="">
                     <p>${resposta.text}</p>
                 </div>
@@ -86,6 +93,26 @@ function embaralharArray(minhaArray) {
     }
 
     return minhaArray
+}
+
+function selecionarResposta(respostaEscolhida) {
+    const pergunta = respostaEscolhida.parentNode
+    const respostas = pergunta.querySelectorAll(".pergunta__resposta")
+    console.log(respostas)
+
+    respostas.forEach(resposta => {
+        resposta.classList.add("gabarito")
+        resposta.onclick = null
+        if (resposta !== respostaEscolhida) {
+            resposta.classList.add("esbranquicar")
+        } else { }
+    });
+
+    const proximaPergunta = pergunta.nextElementSibling
+    console.log(proximaPergunta)
+    setTimeout(() => {
+        proximaPergunta.scrollIntoView()
+    }, 2000)
 }
 
 function habilitarTela3() {
