@@ -76,6 +76,25 @@ main {
     font-size: 30px;
 }
 
+.editar__excluir {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 87px;
+    width: 43px;
+    border-radius: 10px 0px 0px 11px;
+    display: flex;
+    flex-direction: column;
+    background-color: #EC362D;
+}
+
+.editar__excluir ion-icon {
+    color: #FFFFFF;
+    font-size: 23px;
+    margin-top: 8px;
+}
+
 .quizzes, .quizzes-criados {
     width: 100%;
     display: flex;

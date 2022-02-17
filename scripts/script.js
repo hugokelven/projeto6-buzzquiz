@@ -33,17 +33,23 @@ function exibirQuizzes() {
             `
 
             if (existeQuizzesCriados) {
-                for (let i = 0; i < localStorage.length; i++) {
-                    let localQuizzString = localStorage.getItem(`objeto${i}`)
-                    let localQuizz = JSON.parse(localQuizzString)
-                    if (quizz.id === localQuizz.id) {
-                        quizzes__criados.innerHTML += `
-                        <article id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
-                            <div class="degrade"></div>
-                            <img src="${quizz.image}" alt="quizz">
-                            <p>${quizz.title}</p>
-                        </article>
-                        `
+                for (let i = 0; i < 100; i++) {
+                    if (localStorage.getItem(`objeto${i}`) !== null) {
+                        let localQuizzString = localStorage.getItem(`objeto${i}`)
+                        let localQuizz = JSON.parse(localQuizzString)
+                        if (quizz.id === localQuizz.id) {
+                            quizzes__criados.innerHTML += `
+                            <article id="${quizz.id}" class="quizz">
+                                <div class="degrade" onclick="habilitarTela2(this.parentNode)"></div>
+                                <img src="${quizz.image}" alt="quizz">
+                                <div class="editar__excluir">
+                                    <ion-icon name="create-outline" onclick="editarQuizz(this)"></ion-icon>
+                                    <ion-icon name="trash-outline" onclick="excluirQuizz(this)"></ion-icon>
+                                </div>
+                                <p>${quizz.title}</p>
+                            </article>
+                            `
+                        }
                     }
                 }
             }
@@ -69,7 +75,6 @@ function habilitarTela2(quizz) {
     const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`)
 
     promessa.then(resposta => {
-        console.log(resposta.data)
         const body = document.querySelector("body")
 
         body.innerHTML += `
@@ -453,4 +458,27 @@ function voltarTelaInicial() {
     document.querySelector(".tela-2").classList.add("escondido")
     document.querySelector(".tela-3").classList.add("escondido")
     window.location.reload()
+}
+
+function excluirQuizz(element) {
+    if (window.confirm("Você realmente quer deletar esse quizz?")) {
+        let quizz = element.parentNode.parentNode
+        let key = null
+        let storageNumber = null
+        for (let i = 0; i < 100; i++) {
+            if (localStorage.getItem(`objeto${i}`) !== null) {
+                let quizzAPI = JSON.parse(localStorage.getItem(`objeto${i}`))
+                if (parseInt(quizz.id) === quizzAPI.id) {
+                    key = quizzAPI.key
+                    storageNumber = i
+                }
+            }
+        }
+        const promessa = axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`, {headers: {"Secret-Key": key}})
+        promessa.then(() => {
+            localStorage.removeItem(`objeto${storageNumber}`)
+            window.location.reload()
+        })
+        promessa.catch(() => { alert("deu ruim") })
+    }
 }
