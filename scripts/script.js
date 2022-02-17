@@ -1,4 +1,5 @@
 // EXIBIR QUIZZES
+let existeQuizzesCriados = false
 
 let quizzSelecionado = null
 let count = 0
@@ -14,7 +15,19 @@ function exibirQuizzes() {
     promessa.then(resposta => {
         console.log(resposta.data)
         const quizzes = document.querySelector(".quizzes")
+        const quizzes__criados = document.querySelector(".quizzes-criados")
         quizzes.innerHTML = ""
+        quizzes__criados.innerHTML = ""
+
+        if (localStorage.length > 0) {
+            document.querySelector(".sem-quizzes-criados").classList.add("escondido")
+            document.querySelector(".com-quizzes-criados").classList.remove("escondido")
+            existeQuizzesCriados = true
+        } else {
+            document.querySelector(".sem-quizzes-criados").classList.remove("escondido")
+            document.querySelector(".com-quizzes-criados").classList.add("escondido")
+            existeQuizzesCriados = false
+        }
 
         resposta.data.forEach(quizz => {
             quizzes.innerHTML += `
@@ -24,6 +37,23 @@ function exibirQuizzes() {
                 <p>${quizz.title}</p>
             </article>
             `
+
+            if (existeQuizzesCriados) {
+                for (let i = 0; i < localStorage.length; i++) {
+                    let localQuizzString = localStorage.getItem(`objeto${i}`)
+                    let localQuizz = JSON.parse(localQuizzString)
+                    if (quizz.id === localQuizz.id) {
+                        quizzes__criados.innerHTML += `
+                        <article id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
+                            <div class="degrade"></div>
+                            <img src="${quizz.image}" alt="quizz">
+                            <p>${quizz.title}</p>
+                        </article>
+                        `
+                    }
+                }
+            }
+
         });
     })
 
@@ -37,8 +67,10 @@ function exibirQuizzes() {
 function habilitarTela2(quizz) {
     const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
+    const tela3 = document.querySelector(".tela-3")
     tela1.classList.add("escondido")
     tela2.classList.remove("escondido")
+    tela3.classList.add("escondido")
 
     quizzSelecionado = quizz
 
@@ -197,13 +229,18 @@ function habilitarTela3() {
     tela3.classList.remove("escondido")
 }
 
-// EXIBIR PERGUNTAS DO QUIZZ
-
-
 // EXIBIR CRIAÇÃO DO QUIZZ
 let numero__perguntas = null
+let numero__niveis = null
 let valido = null
-let reg = /^#([0-9a-f]{3}){1,2}$/i;
+let porcentagem__minima = null
+let reg = /^#[0-9A-F]{6}$/i;
+let objeto = {}
+let questions = []
+let questions__obj = {}
+let answers = []
+let levels = []
+let levels__obj = {}
 
 function validarInformacoes() {
     let titulo = document.getElementById("quizz__titulo").value
@@ -214,6 +251,9 @@ function validarInformacoes() {
 
     if (titulo.length >= 20 && titulo.length <= 65 && url && parseInt(perguntas) >= 3 && parseInt(niveis) >= 2) {
         numero__perguntas = perguntas
+        numero__niveis = niveis
+        objeto.title = titulo
+        objeto.image = imagem
         habilitarPerguntas()
     } else {
         document.querySelector(".informacoes p").innerHTML = "Informações inválidas"
@@ -221,12 +261,16 @@ function validarInformacoes() {
 }
 
 function validarURL(url) {
-    try {
-        url = new URL(url);
-    } catch (_) {
+    if (url[0] === "h") {
+        try {
+            url = new URL(url);
+        } catch (_) {
+            return false;
+        }
+        return url
+    } else {
         return false;
     }
-    return url
 }
 
 function habilitarPerguntas() {
@@ -273,11 +317,13 @@ function mostrarPerguntas() {
 
 function validarPerguntas() {
     valido = true
-    let teste = document.querySelector(".criacao__pergunta__geral").childNodes
+    questions = []
+    let perguntas = document.querySelector(".criacao__pergunta__geral").childNodes
 
-    for (let i = 1; i < teste.length; i += 2) {validarPergunta(teste[i])}
+    for (let i = 1; i < perguntas.length; i += 2) {validarPergunta(perguntas[i])}
 
     if (valido === true) {
+        objeto.questions = questions
         habilitarNiveis()
     } else {
         document.querySelector(".perguntas p").innerHTML = "Informações inválidas"
@@ -288,6 +334,11 @@ function validarPergunta(pergunta) {
     if (!valido) {
         return valido = false
     }
+
+    answers = []
+    questions__obj = {}
+    let answer = {}
+
     let texto__pergunta = pergunta.childNodes[3].childNodes[1].value
     let cor__pergunta = pergunta.childNodes[3].childNodes[3].value
     let cor__valida = reg.test(cor__pergunta)
@@ -310,14 +361,46 @@ function validarPergunta(pergunta) {
 
     if (texto__pergunta.length >= 20 && cor__valida && correta !== "" && correta__URL && incorreta1 !== "" && incorreta1__URL) {
 
+        answer.text = correta
+        answer.image = correta__url
+        answer.isCorrectAnswer = true
+        answers.push(answer)
+        answer = {}
+
+        answer.text = incorreta1
+        answer.image = incorreta1__url
+        answer.isCorrectAnswer = false
+        answers.push(answer)
+        answer = {}
+
         if ((incorreta2 === "" && incorreta2__url === "") && (incorreta3 === "" && incorreta3__url === "")) {
             valido = true
         } else if ((incorreta2 !== "" && incorreta2__URL) && (incorreta3 === "" && incorreta3__url === "")) {
             valido = true
+
+            answer.text = incorreta2
+            answer.image = incorreta2__url
+            answer.isCorrectAnswer = false
+            answers.push(answer)
+            answer = {}
+
         } else if ((incorreta2 === "" && incorreta2__url === "") && (incorreta3 !== "" && incorreta3__URL)) {
             return valido = false
         } else if ((incorreta2 !== "" && incorreta2__URL) && (incorreta3 !== "" && incorreta3__URL)) {
             valido = true
+
+            answer.text = incorreta2
+            answer.image = incorreta2__url
+            answer.isCorrectAnswer = false
+            answers.push(answer)
+            answer = {}
+
+            answer.text = incorreta3
+            answer.image = incorreta3__url
+            answer.isCorrectAnswer = false
+            answers.push(answer)
+            answer = {}
+
         } else {
             return valido = false
         }
@@ -325,9 +408,124 @@ function validarPergunta(pergunta) {
     } else {
         return valido = false
     }
+
+    questions__obj.title = texto__pergunta
+    questions__obj.color = cor__pergunta
+    questions__obj.answers = answers
+    questions.push(questions__obj)
 }
 
 function habilitarNiveis() {
     document.querySelector(".perguntas").classList.add("escondido")
     document.querySelector(".niveis").classList.remove("escondido")
+    window.scrollTo({top: 0, behavior: 'smooth'})
+    mostrarNiveis()
+}
+
+function mostrarNiveis() {
+    for (let i = 1; i <= numero__niveis; i++) {
+        document.querySelector(".niveis__geral").innerHTML += `
+        <article class="nivel">
+            <h1>Nível ${i}</h1>
+            <input type="text" id="nivel__texto" placeholder="Título do nível">
+            <input type="text" id="nivel__%" placeholder="% de acerto mínima">
+            <input type="text" id="nivel__imagem" placeholder="URL da imagem do nível">
+            <textarea name="descricao" id="nivel__descricao" rows="10" placeholder="Descrição do nível"></textarea>
+        </article>
+        `
+    }
+}
+
+function validarNiveis() {
+    valido = true
+    porcentagem__minima = false
+    levels = []
+    let niveis = document.querySelector(".niveis__geral").childNodes
+
+    for (let i = 1; i < niveis.length; i += 2) {validarNivel(niveis[i])}
+
+    if (valido && porcentagem__minima) {
+        objeto.levels = levels
+        habilitarSucesso()
+    } else {
+        document.querySelector(".niveis p").innerHTML = "Informações inválidas"
+    }
+}
+
+function validarNivel(nivel) {
+    if (!valido) {
+        return valido = false
+    }
+
+    levels__obj = {}
+
+    let titulo__nivel = nivel.childNodes[3].value
+    let porcentagem = nivel.childNodes[5].value
+    let imagem__nivel = nivel.childNodes[7].value
+    let imagem__nivel__url = validarURL(imagem__nivel)
+    let descricao__nivel = nivel.childNodes[9].value
+
+    if (titulo__nivel.length >= 10 && parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100 && imagem__nivel__url && descricao__nivel.length >= 30) {
+        valido = true
+        if (parseInt(porcentagem) === 0) {
+            porcentagem__minima = true
+        }
+    } else {
+        valido = false
+    }
+
+    porcentagemInteiro = parseInt(porcentagem)
+
+    levels__obj.title = titulo__nivel
+    levels__obj.image = imagem__nivel
+    levels__obj.text = descricao__nivel
+    levels__obj.minValue = porcentagemInteiro
+    levels.push(levels__obj)
+}
+
+function habilitarSucesso() {
+    let promessa = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", objeto)
+    promessa.then(resposta => {
+        window.scrollTo({top: 0, behavior: 'smooth'})
+
+        let tamanho = localStorage.length
+        const objeto__string = JSON.stringify(resposta.data)
+        localStorage.setItem(`objeto${tamanho}`, objeto__string)
+
+        mostrarQuizzCriado()
+        document.querySelector(".niveis").classList.add("escondido")
+        document.querySelector(".quizz__criado").classList.remove("escondido")
+    })
+    promessa.catch(() => {
+        alert("Erro na criação do quizz")
+    })
+}
+
+function mostrarQuizzCriado() {
+    let article = document.querySelector(".quizz__criado .quizz")
+    const promessa = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
+    promessa.then(resposta => {
+        let obj = resposta.data[0]
+        article.setAttribute("id", obj.id)
+        article.innerHTML = `
+        <div class="degrade"></div>
+        <img src="${obj.image}" alt="quizz">
+        <p>${obj.title}</p>
+        `
+    })
+    promessa.catch(() => {
+        alert("Não foi possível renderizar o quizz criado")
+    })
+}
+
+function abrirQuizzCriado(botao) {
+    let quizz = botao.parentNode.childNodes[3]
+    habilitarTela2(quizz)
+}
+
+function voltarTelaInicial() {
+    document.querySelector(".tela-1").classList.remove("escondido")
+    document.querySelector(".tela-2").classList.add("escondido")
+    document.querySelector(".tela-3").classList.add("escondido")
+    window.location.reload()
 }

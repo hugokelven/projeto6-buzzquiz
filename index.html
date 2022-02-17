@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -25,6 +25,14 @@
             <div class="sem-quizzes-criados">
                 <p>Você não criou nenhum quizz ainda :(</p>
                 <button onclick="habilitarTela3()">Criar Quizz</button>
+            </div>
+
+            <div class="com-quizzes-criados escondido">
+                <div>
+                    <h1>Seus Quizzes</h1>
+                    <ion-icon name="add-circle" onclick="habilitarTela3()"></ion-icon>
+                </div>
+                <div class="quizzes-criados"></div>
             </div>
     
             <h4>Todos os Quizzes</h4>
@@ -57,10 +65,23 @@
 
                 <button onclick="validarPerguntas()">Prosseguir para criar níveis</button>
                 <p></p>
-
             </article>
 
-            <article class="niveis escondido"></article>
+            <article class="niveis escondido">
+                <h1 class="niveis__titulo">Agora decida os níveis!</h1>
+
+                <div class="niveis__geral"></div>
+
+                <button onclick="validarNiveis()">Finalizar Quizz</button>
+                <p></p>
+            </article>
+
+            <article class="quizz__criado escondido">
+                <h1>Seu quizz está pronto</h1>
+                <article class="quizz"></article>
+                <button onclick="abrirQuizzCriado(this)">Acessar Quizz</button>
+                <p onclick="voltarTelaInicial()" class="quizz__criado__return">Voltar pra home</p>
+            </article>
 
         </section>
     </main>
