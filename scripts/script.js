@@ -1,13 +1,18 @@
 // EXIBIR QUIZZES
 let existeQuizzesCriados = false
 
+let quizzSelecionado = null
+let count = 0
+let acertos = 0
+let niveis = []
+let qtdDePerguntas = null
+
 exibirQuizzes()
 
 function exibirQuizzes() {
     const promessa = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
 
     promessa.then(resposta => {
-        console.log(resposta.data)
         const quizzes = document.querySelector(".quizzes")
         const quizzes__criados = document.querySelector(".quizzes-criados")
         quizzes.innerHTML = ""
@@ -63,7 +68,7 @@ function exibirQuizzes() {
     })
 }
 
-// Exibe as perguntas do quizz selecionado
+// EXIBIR PERGUNTAS DO QUIZZ SELECIONADO
 function habilitarTela2(quizz) {
     const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
@@ -72,17 +77,18 @@ function habilitarTela2(quizz) {
     tela2.classList.remove("escondido")
     tela3.classList.add("escondido")
 
+    quizzSelecionado = quizz
+
     const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`)
 
     promessa.then(resposta => {
-        const body = document.querySelector("body")
+        const banner = document.querySelector(".banner")
+        banner.classList.remove("escondido")
 
-        body.innerHTML += `
-        <div class="banner">
+        banner.innerHTML += `
             <div class="degrade"></div>
             <img src="${resposta.data.image}" alt="banner">
             <p>${resposta.data.title}</p>
-        </div>
         `
         const tela2 = document.querySelector(".tela-2")
         let indiceDaPergunta = 1
@@ -114,12 +120,103 @@ function habilitarTela2(quizz) {
             });
             indiceDaPergunta++
         });
+
+        niveis = resposta.data.levels
+        qtdDePerguntas = resposta.data.questions.length
     })
 
     promessa.catch(erro => {
         console.log(erro)
         alert("Ops! Não foi possível abrir o quizz.")
     })
+}
+
+function selecionarResposta(respostaEscolhida) {
+    count++
+    const pergunta = respostaEscolhida.parentNode
+    const respostas = pergunta.querySelectorAll(".pergunta__resposta")
+
+    respostas.forEach(resposta => {
+        resposta.classList.add("gabarito")
+        resposta.onclick = null
+        if (resposta !== respostaEscolhida) {
+            resposta.classList.add("esbranquicar")
+        } else { }
+    });
+
+    if (respostaEscolhida.classList.contains("correta")) {
+        acertos++
+    }
+
+    const proximaPergunta = pergunta.nextElementSibling
+    setTimeout(() => {
+        proximaPergunta.scrollIntoView()
+    }, 2000)
+
+    const tela2 = document.querySelector(".tela-2")
+    let porcentagemDeAcertos = (acertos/qtdDePerguntas)*100
+    porcentagemDeAcertos = Math.round(porcentagemDeAcertos)
+    console.log(porcentagemDeAcertos)
+
+    if (count === qtdDePerguntas) {
+
+        let indiceNivel = null
+        niveis.forEach(nivel => {
+            if (porcentagemDeAcertos >= nivel.minValue) {
+                indiceNivel = niveis.indexOf(nivel)
+            }
+        })
+
+        tela2.innerHTML += `
+        <div class="resultado-quizz">
+            <div class="resultado-quizz__titulo">${niveis[indiceNivel].title}</div>
+            <img src="${niveis[indiceNivel].image}" alt="">
+            <p>${niveis[indiceNivel].text}</p>
+        </div>
+
+        <button class="reiniciar-quizz" onclick="reiniciarQuizz()">Reiniciar Quizz</button>
+        <button class="voltar-home" onclick="voltarParaHome()">Voltar pra home</button>
+        `
+        const resultadoQuizz = document.querySelector(".resultado-quizz")
+        setTimeout(() => {
+            resultadoQuizz.scrollIntoView()
+        }, 2000)
+
+    } else { }
+}
+
+function reiniciarQuizz() {
+    count = 0
+    acertos = 0
+    niveis = []
+    qtdDePerguntas = null
+
+    const tela2 = document.querySelector(".tela-2")
+    tela2.innerHTML = ""
+
+    habilitarTela2(quizzSelecionado)
+}
+
+function voltarParaHome() {
+    count = 0
+    acertos = 0
+    niveis = []
+    qtdDePerguntas = null
+
+    const tela1 = document.querySelector(".tela-1")
+    const tela2 = document.querySelector(".tela-2")
+    const banner = document.querySelector(".banner")
+    const main = document.querySelector("main")
+
+    tela2.innerHTML = ""
+    banner.innerHTML = ""
+
+    tela1.classList.remove("escondido")
+    tela2.classList.add("escondido")
+    document.querySelector(".banner").classList.add("escondido")
+
+    main.scrollIntoView(true)
+    window.location.reload()
 }
 
 function embaralharArray(minhaArray) {
@@ -130,26 +227,6 @@ function embaralharArray(minhaArray) {
     }
 
     return minhaArray
-}
-
-function selecionarResposta(respostaEscolhida) {
-    const pergunta = respostaEscolhida.parentNode
-    const respostas = pergunta.querySelectorAll(".pergunta__resposta")
-    console.log(respostas)
-
-    respostas.forEach(resposta => {
-        resposta.classList.add("gabarito")
-        resposta.onclick = null
-        if (resposta !== respostaEscolhida) {
-            resposta.classList.add("esbranquicar")
-        } else { }
-    });
-
-    const proximaPergunta = pergunta.nextElementSibling
-    console.log(proximaPergunta)
-    setTimeout(() => {
-        proximaPergunta.scrollIntoView()
-    }, 2000)
 }
 
 function habilitarTela3() {
