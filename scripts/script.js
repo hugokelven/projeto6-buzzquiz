@@ -495,8 +495,11 @@ function habilitarSucesso() {
     promessa.then(resposta => {
         window.scrollTo({top: 0, behavior: 'smooth'})
 
-        let tamanho = localStorage.length
+        let tamanho = 0
         const objeto__string = JSON.stringify(resposta.data)
+        while (localStorage.getItem(`objeto${tamanho}`) !== null) {
+            tamanho++
+        }
         localStorage.setItem(`objeto${tamanho}`, objeto__string)
 
         mostrarQuizzCriado()
@@ -558,4 +561,10 @@ function excluirQuizz(element) {
         })
         promessa.catch(() => { alert("deu ruim") })
     }
+}
+
+// OUTROS
+
+function windowReaload() {
+    window.location.reload()
 }

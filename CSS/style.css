@@ -501,7 +501,7 @@ input::placeholder, textarea::placeholder {
     display: none;
 }
 
-ion-icon:hover, button:hover, .quizz__criado__return:hover {
+ion-icon:hover, button:hover, .quizz__criado__return:hover, header p {
     cursor: pointer;
 }
 
