@@ -156,12 +156,16 @@ function validarInformacoes() {
 }
 
 function validarURL(url) {
-    try {
-        url = new URL(url);
-    } catch (_) {
+    if (url[0] === "h") {
+        try {
+            url = new URL(url);
+        } catch (_) {
+            return false;
+        }
+        return url
+    } else {
         return false;
     }
-    return url
 }
 
 function habilitarPerguntas() {
@@ -376,8 +380,13 @@ function validarNivel(nivel) {
 
 function habilitarSucesso() {
     let promessa = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", objeto)
-    promessa.then(() => {
+    promessa.then(resposta => {
         window.scrollTo({top: 0, behavior: 'smooth'})
+
+        let tamanho = localStorage.length
+        const objeto__string = JSON.stringify(resposta.data)
+        localStorage.setItem(`objeto${tamanho}`, objeto__string)
+
         mostrarQuizzCriado()
         document.querySelector(".niveis").classList.add("escondido")
         document.querySelector(".quizz__criado").classList.remove("escondido")
@@ -413,4 +422,5 @@ function voltarTelaInicial() {
     document.querySelector(".tela-1").classList.remove("escondido")
     document.querySelector(".tela-2").classList.add("escondido")
     document.querySelector(".tela-3").classList.add("escondido")
+    window.location.reload()
 }
