@@ -1,4 +1,5 @@
 // EXIBIR QUIZZES
+let existeQuizzesCriados = false
 
 exibirQuizzes()
 
@@ -8,7 +9,19 @@ function exibirQuizzes() {
     promessa.then(resposta => {
         console.log(resposta.data)
         const quizzes = document.querySelector(".quizzes")
+        const quizzes__criados = document.querySelector(".quizzes-criados")
         quizzes.innerHTML = ""
+        quizzes__criados.innerHTML = ""
+
+        if (localStorage.length > 0) {
+            document.querySelector(".sem-quizzes-criados").classList.add("escondido")
+            document.querySelector(".com-quizzes-criados").classList.remove("escondido")
+            existeQuizzesCriados = true
+        } else {
+            document.querySelector(".sem-quizzes-criados").classList.remove("escondido")
+            document.querySelector(".com-quizzes-criados").classList.add("escondido")
+            existeQuizzesCriados = false
+        }
 
         resposta.data.forEach(quizz => {
             quizzes.innerHTML += `
@@ -18,6 +31,23 @@ function exibirQuizzes() {
                 <p>${quizz.title}</p>
             </article>
             `
+
+            if (existeQuizzesCriados) {
+                for (let i = 0; i < localStorage.length; i++) {
+                    let localQuizzString = localStorage.getItem(`objeto${i}`)
+                    let localQuizz = JSON.parse(localQuizzString)
+                    if (quizz.id === localQuizz.id) {
+                        quizzes__criados.innerHTML += `
+                        <article id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
+                            <div class="degrade"></div>
+                            <img src="${quizz.image}" alt="quizz">
+                            <p>${quizz.title}</p>
+                        </article>
+                        `
+                    }
+                }
+            }
+
         });
     })
 
