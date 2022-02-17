@@ -237,7 +237,7 @@ h4 {
     padding-bottom: 50px;
 }
 
-.informacoes h1, .criacao__perguntas__titulo, .niveis__titulo {
+.informacoes h1, .criacao__perguntas__titulo, .niveis__titulo, .quizz__criado h1 {
     min-height: 89px;
     width: 100%;
     display: flex;
@@ -293,7 +293,7 @@ input::placeholder, textarea::placeholder {
     color: #BABABA;
 }
 
-.informacoes button, .perguntas button, .niveis button {
+.informacoes button, .perguntas button, .niveis button, .quizz__criado button {
     width: 324px;
     height: 54px;
     border-radius: 15px;
@@ -364,6 +364,22 @@ input::placeholder, textarea::placeholder {
     border: 1px solid #B8B8B8;
 }
 
+.quizz__criado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quizz__criado .quizz {
+    margin: 0 0 24px; 
+}
+
+.quizz__criado__return {
+    font-size: 18px;
+    color: #818181;
+    margin-top: 20px;
+}
+
 /* UTILITÁRIOS */
 
 .escondido {
@@ -381,4 +397,11 @@ input::placeholder, textarea::placeholder {
         margin-top: 35px;
     }
 
+}
+
+@media (min-width: 1100px) {
+    .quizz__criado .quizz {
+        width: 500px;
+        height: 266px;
+    }
 }
