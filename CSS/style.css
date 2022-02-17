@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
@@ -226,7 +227,7 @@ h4 {
 
 /* T3 - Informações */
 
-.informacoes, .perguntas {
+.informacoes, .perguntas, .niveis {
     width: 100%;
     min-height: 100%;
     display: flex;
@@ -236,7 +237,7 @@ h4 {
     padding-bottom: 50px;
 }
 
-.informacoes h1, .criacao__perguntas__titulo {
+.informacoes h1, .criacao__perguntas__titulo, .niveis__titulo {
     min-height: 89px;
     width: 100%;
     display: flex;
@@ -261,12 +262,16 @@ h4 {
 
 input {
     height: 46px;
-    width: 95%;
+    width: 100%;
     font-size: 19px;
     margin: 0 0 9px;
     border-radius: 5px;
     border: 1px solid #D1D1D1;
     padding: 0 14px;
+}
+
+.informacoes input {
+    width: 95%;
 }
 
 .informacoes input:first-child {
@@ -282,13 +287,13 @@ input:focus {
     outline: none;
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
     font-size: 19px;
     font-style: italic;
     color: #BABABA;
 }
 
-.informacoes button, .perguntas button {
+.informacoes button, .perguntas button, .niveis button {
     width: 324px;
     height: 54px;
     border-radius: 15px;
@@ -299,14 +304,14 @@ input::placeholder {
     color: #FFF5F4;
 }
 
-.informacoes p, .perguntas p {
+.informacoes p, .perguntas p, .niveis p {
     font-size: 20px;
     font-weight: 700;
     color: #EC362D;
     margin-top: 20px;
 }
 
-.criacao__pergunta__geral {
+.criacao__pergunta__geral, .niveis__geral {
     width: 100%;
     height: 100%;
     display: flex;
@@ -314,7 +319,7 @@ input::placeholder {
     align-items: center;
 }
 
-.criacao__pergunta {
+.criacao__pergunta, .nivel {
     background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
@@ -326,7 +331,7 @@ input::placeholder {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
 }
 
-.criacao__pergunta h1 {
+.criacao__pergunta h1, .nivel h1 {
     font-weight: 700;
     font-size: 20px;
     margin-bottom: 24px;
@@ -340,6 +345,23 @@ input::placeholder {
 
 .criacao__pergunta input {
     margin-bottom: 14px;
+}
+
+.nivel {
+    height: 439px;
+}
+
+.nivel textarea {
+    width: 100%;
+    border: 1px solid #D1D1D1;
+    outline: none;
+    border-radius: 5px;
+    font-size: 19px;
+    padding: 14px;
+}
+
+.nivel textarea:focus {
+    border: 1px solid #B8B8B8;
 }
 
 /* UTILITÁRIOS */

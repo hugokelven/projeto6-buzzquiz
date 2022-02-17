@@ -122,12 +122,11 @@ function habilitarTela3() {
     tela3.classList.remove("escondido")
 }
 
-// EXIBIR PERGUNTAS DO QUIZZ
-
-
 // EXIBIR CRIAÇÃO DO QUIZZ
 let numero__perguntas = null
+let numero__niveis = null
 let valido = null
+let porcentagem__minima = null
 let reg = /^#([0-9a-f]{3}){1,2}$/i;
 
 function validarInformacoes() {
@@ -139,6 +138,7 @@ function validarInformacoes() {
 
     if (titulo.length >= 20 && titulo.length <= 65 && url && parseInt(perguntas) >= 3 && parseInt(niveis) >= 2) {
         numero__perguntas = perguntas
+        numero__niveis = niveis
         habilitarPerguntas()
     } else {
         document.querySelector(".informacoes p").innerHTML = "Informações inválidas"
@@ -198,9 +198,9 @@ function mostrarPerguntas() {
 
 function validarPerguntas() {
     valido = true
-    let teste = document.querySelector(".criacao__pergunta__geral").childNodes
+    let perguntas = document.querySelector(".criacao__pergunta__geral").childNodes
 
-    for (let i = 1; i < teste.length; i += 2) {validarPergunta(teste[i])}
+    for (let i = 1; i < perguntas.length; i += 2) {validarPergunta(perguntas[i])}
 
     if (valido === true) {
         habilitarNiveis()
@@ -213,6 +213,7 @@ function validarPergunta(pergunta) {
     if (!valido) {
         return valido = false
     }
+
     let texto__pergunta = pergunta.childNodes[3].childNodes[1].value
     let cor__pergunta = pergunta.childNodes[3].childNodes[3].value
     let cor__valida = reg.test(cor__pergunta)
@@ -255,4 +256,60 @@ function validarPergunta(pergunta) {
 function habilitarNiveis() {
     document.querySelector(".perguntas").classList.add("escondido")
     document.querySelector(".niveis").classList.remove("escondido")
+    window.scrollTo({top: 0, behavior: 'smooth'})
+    mostrarNiveis()
+}
+
+function mostrarNiveis() {
+    for (let i = 1; i <= numero__niveis; i++) {
+        document.querySelector(".niveis__geral").innerHTML += `
+        <article class="nivel">
+            <h1>Nível ${i}</h1>
+            <input type="text" id="nivel__texto" placeholder="Título do nível">
+            <input type="text" id="nivel__%" placeholder="% de acerto mínima">
+            <input type="text" id="nivel__imagem" placeholder="URL da imagem do nível">
+            <textarea name="descricao" id="nivel__descricao" rows="10" placeholder="Descrição do nível"></textarea>
+        </article>
+        `
+    }
+}
+
+function validarNiveis() {
+    valido = true
+    porcentagem__minima = false
+    let niveis = document.querySelector(".niveis__geral").childNodes
+
+    for (let i = 1; i < niveis.length; i += 2) {validarNivel(niveis[i])}
+
+    if (valido && porcentagem__minima) {
+        habilitarSucesso()
+    } else {
+        document.querySelector(".niveis p").innerHTML = "Informações inválidas"
+    }
+}
+
+function validarNivel(nivel) {
+    if (!valido) {
+        return valido = false
+    }
+
+    let titulo__nivel = nivel.childNodes[3].value
+    let porcentagem = nivel.childNodes[5].value
+    let imagem__nivel = nivel.childNodes[7].value
+    let imagem__nivel__url = validarURL(imagem__nivel)
+    let descricao__nivel = nivel.childNodes[9].value
+
+    if (titulo__nivel.length >= 10 && parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100 && imagem__nivel__url && descricao__nivel.length >= 30) {
+        valido = true
+        if (parseInt(porcentagem) === 0) {
+            porcentagem__minima = true
+        }
+    } else {
+        valido = false
+    }
+}
+
+function habilitarSucesso() {
+    document.querySelector(".niveis").classList.add("escondido")
+    document.querySelector(".quizz__criado").classList.remove("escondido")
 }
