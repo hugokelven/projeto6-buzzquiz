@@ -234,6 +234,13 @@ function habilitarTela3() {
     const tela3 = document.querySelector(".tela-3")
     tela1.classList.add("escondido")
     tela3.classList.remove("escondido")
+
+    if (editandoQuizz) {
+        document.getElementById("quizz__titulo").value = editandoQuizzObj.title
+        document.getElementById("quizz__imagemURL").value = editandoQuizzObj.image
+        document.getElementById("quizz__perguntas").value = editandoQuizzObj.questions.length
+        document.getElementById("quizz__niveis").value = editandoQuizzObj.levels.length
+    }
 }
 
 // EXIBIR CRIAÇÃO DO QUIZZ
@@ -248,6 +255,8 @@ let questions__obj = {}
 let answers = []
 let levels = []
 let levels__obj = {}
+let editandoQuizz = false
+let editandoQuizzObj = null
 
 function validarInformacoes() {
     let titulo = document.getElementById("quizz__titulo").value
@@ -293,32 +302,57 @@ function mostrarPerguntas() {
     
             <h1>Pergunta ${i}</h1>
             <div>
-                <input type="text" id="pergunta__texto" placeholder="Texto da pergunta">
-                <input type="text" id="pergunta__cor" placeholder="Cor de fundo da pergunta">
+                <input type="text" id="pergunta__texto" class="pergunta__texto${i}" placeholder="Texto da pergunta">
+                <input type="text" id="pergunta__cor" class="pergunta__cor${i}" placeholder="Cor de fundo da pergunta">
             </div>
 
             <h1>Resposta correta</h1>
             <div>
-                <input type="text" id="correta__texto" placeholder="Resposta correta">
-                <input type="text" id="correta__url" placeholder="URL da imagem">
+                <input type="text" id="correta__texto" class="correta__texto${i}" placeholder="Resposta correta">
+                <input type="text" id="correta__url" class="correta__url${i}" placeholder="URL da imagem">
             </div>
 
             <h1>Respostas incorretas</h1>
             <div>
-                <input type="text" id="incorreta1__texto" placeholder="Resposta incorreta 1">
-                <input type="text" id="incorreta1__url" placeholder="URL da imagem 1">
+                <input type="text" id="incorreta1__texto" class="incorreta1__texto${i}" placeholder="Resposta incorreta 1">
+                <input type="text" id="incorreta1__url" class="incorreta1__url${i}" placeholder="URL da imagem 1">
             </div>
             <div>
-                <input type="text" id="incorreta2__texto" placeholder="Resposta incorreta 2">
-                <input type="text" id="incorreta2__url" placeholder="URL da imagem 2">
+                <input type="text" id="incorreta2__texto" class="incorreta2__texto${i}" placeholder="Resposta incorreta 2">
+                <input type="text" id="incorreta2__url" class="incorreta2__url${i}" placeholder="URL da imagem 2">
             </div>
             <div>
-                <input type="text" id="incorreta3__texto" placeholder="Resposta incorreta 3">
-                <input type="text" id="incorreta3__url" placeholder="URL da imagem 3">
+                <input type="text" id="incorreta3__texto" class="incorreta3__texto${i}" placeholder="Resposta incorreta 3">
+                <input type="text" id="incorreta3__url" class="incorreta3__url${i}" placeholder="URL da imagem 3">
             </div>
 
         </article>
-    `
+        `
+    }
+
+    if (editandoQuizz) {
+        for (let i = 1; i <= numero__perguntas; i++) {
+            if (typeof editandoQuizzObj.questions[i - 1] !== "undefined") {
+                document.querySelector(`.pergunta__texto${i}`).value = editandoQuizzObj.questions[i - 1].title
+                document.querySelector(`.pergunta__cor${i}`).value = editandoQuizzObj.questions[i - 1].color
+    
+                document.querySelector(`.correta__texto${i}`).value = editandoQuizzObj.questions[i - 1].answers[0].text
+                document.querySelector(`.correta__url${i}`).value = editandoQuizzObj.questions[i - 1].answers[0].image
+    
+                document.querySelector(`.incorreta1__texto${i}`).value = editandoQuizzObj.questions[i - 1].answers[1].text
+                document.querySelector(`.incorreta1__url${i}`).value = editandoQuizzObj.questions[i - 1].answers[1].image
+    
+                if (typeof editandoQuizzObj.questions[i - 1].answers[2] !== "undefined") {
+                    document.querySelector(`.incorreta2__texto${i}`).value = editandoQuizzObj.questions[i - 1].answers[2].text
+                    document.querySelector(`.incorreta2__url${i}`).value = editandoQuizzObj.questions[i - 1].answers[2].image
+    
+                    if (typeof editandoQuizzObj.questions[i - 1].answers[3] !== "undefined") {
+                        document.querySelector(`.incorreta3__texto${i}`).value = editandoQuizzObj.questions[i - 1].answers[3].text
+                        document.querySelector(`.incorreta3__url${i}`).value = editandoQuizzObj.questions[i - 1].answers[3].image
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -434,12 +468,22 @@ function mostrarNiveis() {
         document.querySelector(".niveis__geral").innerHTML += `
         <article class="nivel">
             <h1>Nível ${i}</h1>
-            <input type="text" id="nivel__texto" placeholder="Título do nível">
-            <input type="text" id="nivel__%" placeholder="% de acerto mínima">
-            <input type="text" id="nivel__imagem" placeholder="URL da imagem do nível">
-            <textarea name="descricao" id="nivel__descricao" rows="10" placeholder="Descrição do nível"></textarea>
+            <input type="text" id="nivel__texto" class="nivel__texto${i}" placeholder="Título do nível">
+            <input type="text" id="nivel__%" class="nivel__porcentagem${i}" placeholder="% de acerto mínima">
+            <input type="text" id="nivel__imagem" class="nivel__imagem${i}" placeholder="URL da imagem do nível">
+            <textarea name="descricao" id="nivel__descricao" rows="10" class="nivel__descricao${i}" placeholder="Descrição do nível"></textarea>
         </article>
         `
+    }
+    if (editandoQuizz) {
+        for (let i = 1; i <= numero__perguntas; i++) {
+            if (typeof editandoQuizzObj.levels[i - 1] !== "undefined") {
+                document.querySelector(`.nivel__texto${i}`).value = editandoQuizzObj.levels[i - 1].title
+                document.querySelector(`.nivel__porcentagem${i}`).value = editandoQuizzObj.levels[i - 1].minValue
+                document.querySelector(`.nivel__imagem${i}`).value = editandoQuizzObj.levels[i - 1].image
+                document.querySelector(`.nivel__descricao${i}`).value = editandoQuizzObj.levels[i - 1].text
+            }
+        }
     }
 }
 
@@ -491,31 +535,47 @@ function validarNivel(nivel) {
 }
 
 function habilitarSucesso() {
-    let promessa = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", objeto)
-    promessa.then(resposta => {
-        window.scrollTo({top: 0, behavior: 'smooth'})
+    if (!editandoQuizz) {
+        let promessa = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", objeto)
+        promessa.then(resposta => {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
 
-        let tamanho = 0
-        const objeto__string = JSON.stringify(resposta.data)
-        while (localStorage.getItem(`objeto${tamanho}`) !== null) {
-            tamanho++
-        }
-        localStorage.setItem(`objeto${tamanho}`, objeto__string)
+            let tamanho = 0
+            const objeto__string = JSON.stringify(resposta.data)
+            while (localStorage.getItem(`objeto${tamanho}`) !== null) {
+                tamanho++
+            }
+            localStorage.setItem(`objeto${tamanho}`, objeto__string)
 
-        mostrarQuizzCriado()
-        document.querySelector(".niveis").classList.add("escondido")
-        document.querySelector(".quizz__criado").classList.remove("escondido")
-    })
-    promessa.catch(() => {
-        alert("Erro na criação do quizz")
-    })
+            mostrarQuizzCriado()
+            document.querySelector(".niveis").classList.add("escondido")
+            document.querySelector(".quizz__criado").classList.remove("escondido")
+        })
+        promessa.catch(() => {
+            alert("Erro na criação do quizz")
+        })
+    } else {
+        postarQuizzEditado()
+    }
 }
 
 function mostrarQuizzCriado() {
     let article = document.querySelector(".quizz__criado .quizz")
+    let obj = null
     const promessa = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     promessa.then(resposta => {
-        let obj = resposta.data[0]
+        if (!editandoQuizz) {
+            obj = resposta.data[0]
+        } else {
+            resposta.data.forEach(quizz => {
+                if (quizz.id === editandoQuizzObj.id) {
+                    obj = quizz
+                }
+            })
+            editandoQuizz = false
+            editandoQuizzObj = null
+        }
+
         article.setAttribute("id", obj.id)
         article.innerHTML = `
         <div class="degrade"></div>
@@ -561,6 +621,48 @@ function excluirQuizz(element) {
         })
         promessa.catch(() => { alert("deu ruim") })
     }
+}
+
+function editarQuizz(element) {
+    let quizz = element.parentNode.parentNode
+    let quizzObj = null
+    const promessa = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes")
+    promessa.then(resposta => {
+        for (let i = 0; i < resposta.data.length; i++) {
+            if (resposta.data[i].id === parseInt(quizz.id)) {
+                quizzObj = resposta.data[i]
+            }
+        }
+        editandoQuizz = true
+        editandoQuizzObj = quizzObj
+        habilitarTela3()
+    })
+}
+
+function postarQuizzEditado() {
+    let quizz = editandoQuizzObj
+    let key = null
+    let storageNumber = null
+    for (let i = 0; i < 100; i++) {
+        if (localStorage.getItem(`objeto${i}`) !== null) {
+            let quizzAPI = JSON.parse(localStorage.getItem(`objeto${i}`))
+            if (parseInt(quizz.id) === quizzAPI.id) {
+                key = quizzAPI.key
+                storageNumber = i
+            }
+        }
+    }
+    const promessa = axios.put(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`, objeto, { headers: { "Secret-Key": key } })
+    promessa.then(resposta => {
+        const objeto__string = JSON.stringify(resposta.data)
+        localStorage.setItem(`objeto${storageNumber}`, objeto__string)
+        window.scrollTo({top: 0, behavior: 'smooth'})
+        document.querySelector(".niveis").classList.add("escondido")
+        document.querySelector(".quizz__criado").classList.remove("escondido") 
+
+        mostrarQuizzCriado()
+    })
+    promessa.catch(() => { alert("deu ruim no axios.put") })
 }
 
 // OUTROS
