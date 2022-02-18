@@ -151,7 +151,7 @@ h4 {
 
 .banner {
     position: absolute;
-    z-index: 4;
+    z-index: 3;
     top: 0;
     left: 0;
     right: 0;
@@ -535,10 +535,6 @@ ion-icon:hover {
         width: 375px;
         height: 500px;
         padding: 18px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
     }
     .resultado-quizz__titulo {
         width: 100%;

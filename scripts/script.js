@@ -1,4 +1,6 @@
 // EXIBIR QUIZZES
+const QUIZZ_API = 'https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/'
+
 let existeQuizzesCriados = false
 
 let quizzSelecionado = null
@@ -10,7 +12,7 @@ let qtdDePerguntas = null
 exibirQuizzes()
 
 function exibirQuizzes() {
-    const promessa = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
+    const promessa = axios.get(QUIZZ_API)
 
     promessa.then(resposta => {
         console.log(resposta.data)
@@ -74,56 +76,71 @@ function habilitarTela2(quizz) {
 
     quizzSelecionado = quizz
 
-    const promessa = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`)
+    const promessa = axios.get(QUIZZ_API + `${quizz.id}`)
 
     promessa.then(resposta => {
         console.log(resposta.data)
         const banner = document.querySelector(".banner")
+        let perguntas = resposta.data.questions
 
         banner.innerHTML += `
             <div class="degrade"></div>
             <img src="${resposta.data.image}" alt="banner">
             <p>${resposta.data.title}</p>
         `
-        const tela2 = document.querySelector(".tela-2")
-        let indiceDaPergunta = 1
 
-        resposta.data.questions.forEach(pergunta => {
-            tela2.innerHTML += `
-            <div id="pergunta_${indiceDaPergunta}" class="pergunta">
-                <div class="pergunta__titulo" style="background-color: ${pergunta.color};">${pergunta.title}</div>
-            </div>
-            `
-            const perguntaAtual = document.getElementById(`pergunta_${indiceDaPergunta}`)
-
-            pergunta.answers = embaralharArray(pergunta.answers)
-
-            pergunta.answers.forEach(resposta => {
-                let isRespostaCorreta = ""
-                if (resposta.isCorrectAnswer) {
-                    isRespostaCorreta = 'correta'
-                } else {
-                    isRespostaCorreta = 'errada'
-                }
-
-                perguntaAtual.innerHTML += `
-                <div class="pergunta__resposta ${isRespostaCorreta}" onclick="selecionarResposta(this)">
-                    <img src=${resposta.image} alt="">
-                    <p>${resposta.text}</p>
-                </div>
-                `
-            });
-            indiceDaPergunta++
-        });
+        gerarPerguntas(perguntas)
 
         niveis = resposta.data.levels
-        qtdDePerguntas = resposta.data.questions.length
+        qtdDePerguntas = perguntas.length
     })
 
     promessa.catch(erro => {
         console.log(erro)
         alert("Ops! Não foi possível abrir o quizz.")
     })
+}
+
+function gerarPerguntas(perguntas) {
+    const tela2 = document.querySelector(".tela-2")
+    let indiceDaPergunta = 1
+
+    perguntas.forEach(pergunta => {
+        let respostas = pergunta.answers
+
+        tela2.innerHTML += `
+        <div id="pergunta_${indiceDaPergunta}" class="pergunta">
+            <div class="pergunta__titulo" style="background-color: ${pergunta.color};">${pergunta.title}</div>
+        </div>
+        `
+
+        const perguntaGerada = document.getElementById(`pergunta_${indiceDaPergunta}`)
+
+        respostas = embaralharArray(respostas)
+
+        gerarRespostas(respostas, perguntaGerada)
+
+        indiceDaPergunta++
+    });
+}
+
+function gerarRespostas(respostas, perguntaGerada) {
+    respostas.forEach(resposta => {
+        let isRespostaCorreta = ""
+
+        if (resposta.isCorrectAnswer) {
+            isRespostaCorreta = 'correta'
+        } else {
+            isRespostaCorreta = 'errada'
+        }
+
+        perguntaGerada.innerHTML += `
+        <div class="pergunta__resposta ${isRespostaCorreta}" onclick="selecionarResposta(this)">
+            <img src=${resposta.image} alt="">
+            <p>${resposta.text}</p>
+        </div>
+        `
+    });
 }
 
 function selecionarResposta(respostaEscolhida) {
