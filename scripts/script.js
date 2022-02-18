@@ -1,9 +1,9 @@
-// EXIBIR QUIZZES
 const QUIZZ_API = 'https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/'
 
 let existeQuizzesCriados = false
-
 let quizzSelecionado = null
+
+// Variaveis para calculo do nivel atingido
 let count = 0
 let acertos = 0
 let niveis = []
@@ -97,6 +97,7 @@ function habilitarTela2(quizz) {
         gerarPerguntas(perguntas)
 
         niveis = resposta.data.levels
+        console.log(niveis)
         qtdDePerguntas = perguntas.length
     })
 
@@ -153,6 +154,31 @@ function selecionarResposta(respostaEscolhida) {
     const pergunta = respostaEscolhida.parentNode
     const respostas = pergunta.querySelectorAll(".pergunta__resposta")
 
+    mostrarGabarito(respostas, respostaEscolhida)
+
+    contarAcertos(respostaEscolhida)
+
+    setTimeout(() => {
+        const proximaPergunta = pergunta.nextElementSibling
+        
+        if (count !== qtdDePerguntas) {
+            proximaPergunta.scrollIntoView()
+        } else { }
+    }, 2000)
+
+
+    const tela2 = document.querySelector(".tela-2")
+
+    let porcentagemDeAcertos = (acertos/qtdDePerguntas)*100
+    porcentagemDeAcertos = Math.round(porcentagemDeAcertos)
+
+    if (count === qtdDePerguntas) {
+        exibirResultadoDoQuizz(tela2, porcentagemDeAcertos)
+    } else { }
+}
+
+function mostrarGabarito(respostas, respostaEscolhida) {
+    
     respostas.forEach(resposta => {
         resposta.classList.add("gabarito")
         resposta.onclick = null
@@ -160,53 +186,58 @@ function selecionarResposta(respostaEscolhida) {
             resposta.classList.add("esbranquicar")
         } else { }
     });
+}
+
+function contarAcertos(respostaEscolhida) {
 
     if (respostaEscolhida.classList.contains("correta")) {
         acertos++
-    }
-
-    const proximaPergunta = pergunta.nextElementSibling
-    setTimeout(() => {
-        proximaPergunta.scrollIntoView()
-    }, 2000)
-
-    const tela2 = document.querySelector(".tela-2")
-    let porcentagemDeAcertos = (acertos/qtdDePerguntas)*100
-    porcentagemDeAcertos = Math.round(porcentagemDeAcertos)
-    console.log(porcentagemDeAcertos)
-
-    if (count === qtdDePerguntas) {
-
-        let indiceNivel = null
-        niveis.forEach(nivel => {
-            if (porcentagemDeAcertos >= nivel.minValue) {
-                indiceNivel = niveis.indexOf(nivel)
-            }
-        })
-
-        tela2.innerHTML += `
-        <div class="resultado-quizz">
-            <div class="resultado-quizz__titulo">${niveis[indiceNivel].title}</div>
-            <img src="${niveis[indiceNivel].image}" alt="">
-            <p>${niveis[indiceNivel].text}</p>
-        </div>
-
-        <button class="reiniciar-quizz" onclick="reiniciarQuizz()">Reiniciar Quizz</button>
-        <button class="voltar-home" onclick="voltarParaHome()">Voltar pra home</button>
-        `
-        const resultadoQuizz = document.querySelector(".resultado-quizz")
-        setTimeout(() => {
-            resultadoQuizz.scrollIntoView()
-        }, 2000)
-
     } else { }
 }
 
+function exibirResultadoDoQuizz(tela2, porcentagemDeAcertos) {
+    let indiceNivel = null
+    let valoresNiveis = []
+    let valorNivelAtingido = null
+
+    niveis.forEach(nivel => {
+        valoresNiveis.push(parseInt(nivel.minValue))
+    })
+
+    valoresNiveis.sort(function(a, b){return a-b})
+    console.log(valoresNiveis)
+
+    valoresNiveis.forEach(valor => {
+        if (porcentagemDeAcertos >= valor) {
+            valorNivelAtingido = valor
+        } else { }
+    })
+
+    niveis.forEach(nivel => {
+        if (nivel.minValue === valorNivelAtingido) {
+            indiceNivel = niveis.indexOf(nivel)
+        } else { }
+    })
+
+    tela2.innerHTML += `
+    <div class="resultado-quizz">
+        <div class="resultado-quizz__titulo">${niveis[indiceNivel].title}</div>
+        <img src="${niveis[indiceNivel].image}" alt="">
+        <p>${niveis[indiceNivel].text}</p>
+    </div>
+
+    <button class="reiniciar-quizz" onclick="reiniciarQuizz()">Reiniciar Quizz</button>
+    <button class="voltar-home" onclick="voltarParaHome()">Voltar pra home</button>
+    `
+    const resultadoQuizz = document.querySelector(".resultado-quizz")
+    setTimeout(() => {
+        resultadoQuizz.scrollIntoView()
+    }, 2000)
+}
+
 function reiniciarQuizz() {
-    count = 0
-    acertos = 0
-    niveis = []
-    qtdDePerguntas = null
+    
+    resetarVariaveisCalculoNivelAtingido()
 
     const tela2 = document.querySelector(".tela-2")
     tela2.innerHTML = ""
@@ -215,10 +246,8 @@ function reiniciarQuizz() {
 }
 
 function voltarParaHome() {
-    count = 0
-    acertos = 0
-    niveis = []
-    qtdDePerguntas = null
+
+    resetarVariaveisCalculoNivelAtingido()
 
     const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
@@ -233,7 +262,14 @@ function voltarParaHome() {
     document.querySelector(".banner").classList.add("escondido")
 
     main.scrollIntoView(true)
-    window.location.reload()
+    windowReaload()
+}
+
+function resetarVariaveisCalculoNivelAtingido() {
+    count = 0
+    acertos = 0
+    niveis = []
+    qtdDePerguntas = null
 }
 
 function embaralharArray(minhaArray) {
@@ -553,7 +589,7 @@ function validarNivel(nivel) {
 
 function habilitarSucesso() {
     if (!editandoQuizz) {
-        let promessa = axios.post("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes", objeto)
+        let promessa = axios.post(QUIZZ_API, objeto)
         promessa.then(resposta => {
             window.scrollTo({ top: 0, behavior: 'smooth' })
 
@@ -579,7 +615,7 @@ function habilitarSucesso() {
 function mostrarQuizzCriado() {
     let article = document.querySelector(".quizz__criado .quizz")
     let obj = null
-    const promessa = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
+    const promessa = axios.get(QUIZZ_API)
     promessa.then(resposta => {
         if (!editandoQuizz) {
             obj = resposta.data[0]
@@ -631,7 +667,7 @@ function excluirQuizz(element) {
                 }
             }
         }
-        const promessa = axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`, {headers: {"Secret-Key": key}})
+        const promessa = axios.delete(QUIZZ_API + `${quizz.id}`, {headers: {"Secret-Key": key}})
         promessa.then(() => {
             localStorage.removeItem(`objeto${storageNumber}`)
             window.location.reload()
@@ -643,7 +679,7 @@ function excluirQuizz(element) {
 function editarQuizz(element) {
     let quizz = element.parentNode.parentNode
     let quizzObj = null
-    const promessa = axios.get("https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes")
+    const promessa = axios.get(QUIZZ_API)
     promessa.then(resposta => {
         for (let i = 0; i < resposta.data.length; i++) {
             if (resposta.data[i].id === parseInt(quizz.id)) {
@@ -669,7 +705,7 @@ function postarQuizzEditado() {
             }
         }
     }
-    const promessa = axios.put(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${quizz.id}`, objeto, { headers: { "Secret-Key": key } })
+    const promessa = axios.put(QUIZZ_API + `${quizz.id}`, objeto, { headers: { "Secret-Key": key } })
     promessa.then(resposta => {
         const objeto__string = JSON.stringify(resposta.data)
         localStorage.setItem(`objeto${storageNumber}`, objeto__string)
