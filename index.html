@@ -50,9 +50,13 @@
                 <h1>Comece pelo começo</h1>
                 <div>
                     <input type="text" id="quizz__titulo" placeholder="Título do seu quizz">
+                    <label for="quizz__titulo" id="quizz__titulo__label" class="escondido">Título do quizz deve ter no mínimo 20 e no máximo 65 caracteres</label>
                     <input type="text" id="quizz__imagemURL" placeholder="URL da imagem do seu quizz">
+                    <label for="quizz__imagemURL" id="quizz__imagemURL__label" class="escondido">O valor informado não é uma URL válida</label>
                     <input type="text" id="quizz__perguntas" placeholder="Quantidade de perguntas do quizz">
+                    <label for="quizz__perguntas" id="quizz__perguntas__label" class="escondido">O quizz deve ter no mínimo 3 perguntas</label>
                     <input type="text" id="quizz__niveis" placeholder="Quantidade de níveis do quizz">
+                    <label for="quizz__niveis" id="quizz__niveis__label" class="escondido">O quizz deve ter no mínimo 2 níveis</label>
                 </div>
                 <button onclick="validarInformacoes()">Prosseguir para criar perguntas</button>
                 <p></p>

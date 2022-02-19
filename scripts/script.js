@@ -11,24 +11,14 @@ let qtdDePerguntas = null
 
 exibirQuizzes()
 
-function habilitarTelaCarregando() {
-    const carregando = document.querySelector(".carregando")
-    carregando.classList.remove("escondido")
-}
-
-function desabilitarTelaCarregando() {
-    const carregando = document.querySelector(".carregando")
-    carregando.classList.add("escondido")
-}
-
 function exibirQuizzes() {
     habilitarTelaCarregando()
-
+    
     const promessa = axios.get(QUIZZ_API)
-
+    
     promessa.then(resposta => {
         desabilitarTelaCarregando()
-
+        
         const quizzes = document.querySelector(".quizzes")
         const quizzes__criados = document.querySelector(".quizzes-criados")
         quizzes.innerHTML = ""
@@ -43,16 +33,16 @@ function exibirQuizzes() {
             document.querySelector(".com-quizzes-criados").classList.add("escondido")
             existeQuizzesCriados = false
         }
-
+        
         resposta.data.forEach(quizz => {
             quizzes.innerHTML += `
             <article id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
-                <div class="degrade"></div>
-                <img src="${quizz.image}" alt="quizz">
-                <p>${quizz.title}</p>
+            <div class="degrade"></div>
+            <img src="${quizz.image}" alt="quizz">
+            <p>${quizz.title}</p>
             </article>
             `
-
+            
             if (existeQuizzesCriados) {
                 for (let i = 0; i < 100; i++) {
                     if (localStorage.getItem(`objeto${i}`) !== null) {
@@ -61,61 +51,60 @@ function exibirQuizzes() {
                         if (quizz.id === localQuizz.id) {
                             quizzes__criados.innerHTML += `
                             <article id="${quizz.id}" class="quizz">
-                                <div class="degrade" onclick="habilitarTela2(this.parentNode)"></div>
-                                <img src="${quizz.image}" alt="quizz">
-                                <div class="editar__excluir">
-                                    <ion-icon name="create-outline" onclick="editarQuizz(this)"></ion-icon>
-                                    <ion-icon name="trash-outline" onclick="excluirQuizz(this)"></ion-icon>
-                                </div>
-                                <p>${quizz.title}</p>
+                            <div class="degrade" onclick="habilitarTela2(this.parentNode)"></div>
+                            <img src="${quizz.image}" alt="quizz">
+                            <div class="editar__excluir">
+                            <ion-icon name="create-outline" onclick="editarQuizz(this)"></ion-icon>
+                            <ion-icon name="trash-outline" onclick="excluirQuizz(this)"></ion-icon>
+                            </div>
+                            <p>${quizz.title}</p>
                             </article>
                             `
                         }
                     }
                 }
             }
-
+                
         });
     })
-
+        
     promessa.catch(erro => {
         console.log(erro)
         alert("Alguma coisa deu ruim!")
     })
 }
-
+    
 // EXIBIR PERGUNTAS DO QUIZZ SELECIONADO
 function habilitarTela2(quizz) {
     habilitarTelaCarregando()
-
+    
     const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
     const tela3 = document.querySelector(".tela-3")
     tela1.classList.add("escondido")
     tela2.classList.remove("escondido")
     tela3.classList.add("escondido")
-
+    
     quizzSelecionado = quizz
-
+    
     const promessa = axios.get(QUIZZ_API + `${quizz.id}`)
-
+    
     promessa.then(resposta => {
         desabilitarTelaCarregando()
-
+        
         const banner = document.querySelector(".banner")
         banner.classList.remove("escondido")
         let perguntas = resposta.data.questions
-
+        
         banner.innerHTML += `
             <div class="degrade"></div>
             <img src="${resposta.data.image}" alt="banner">
             <p>${resposta.data.title}</p>
-        `
-
+            `
+            
         gerarPerguntas(perguntas)
-
+        
         niveis = resposta.data.levels
-        console.log(niveis)
         qtdDePerguntas = perguntas.length
     })
 
@@ -128,40 +117,41 @@ function habilitarTela2(quizz) {
 function gerarPerguntas(perguntas) {
     const tela2 = document.querySelector(".tela-2")
     let indiceDaPergunta = 1
-
+    
     perguntas.forEach(pergunta => {
         let respostas = pergunta.answers
-
+        
         tela2.innerHTML += `
         <div id="pergunta_${indiceDaPergunta}" class="pergunta">
-            <div class="pergunta__titulo" style="background-color: ${pergunta.color};">${pergunta.title}</div>
+        <div class="pergunta__titulo" style="background-color: ${pergunta.color};">${pergunta.title}</div>
         </div>
         `
-
+        
         const perguntaGerada = document.getElementById(`pergunta_${indiceDaPergunta}`)
-
+        
         respostas = embaralharArray(respostas)
-
+        
         gerarRespostas(respostas, perguntaGerada)
-
+        
         indiceDaPergunta++
     });
 }
 
 function gerarRespostas(respostas, perguntaGerada) {
+
     respostas.forEach(resposta => {
         let isRespostaCorreta = ""
-
+        
         if (resposta.isCorrectAnswer) {
             isRespostaCorreta = 'correta'
         } else {
             isRespostaCorreta = 'errada'
         }
-
+        
         perguntaGerada.innerHTML += `
         <div class="pergunta__resposta ${isRespostaCorreta}" onclick="selecionarResposta(this)">
-            <img src=${resposta.image} alt="">
-            <p>${resposta.text}</p>
+        <img src=${resposta.image} alt="">
+        <p>${resposta.text}</p>
         </div>
         `
     });
@@ -171,11 +161,11 @@ function selecionarResposta(respostaEscolhida) {
     count++
     const pergunta = respostaEscolhida.parentNode
     const respostas = pergunta.querySelectorAll(".pergunta__resposta")
-
+    
     mostrarGabarito(respostas, respostaEscolhida)
-
+    
     contarAcertos(respostaEscolhida)
-
+    
     setTimeout(() => {
         const proximaPergunta = pergunta.nextElementSibling
         
@@ -183,13 +173,13 @@ function selecionarResposta(respostaEscolhida) {
             proximaPergunta.scrollIntoView()
         } else { }
     }, 2000)
-
-
+    
+    
     const tela2 = document.querySelector(".tela-2")
-
+    
     let porcentagemDeAcertos = (acertos/qtdDePerguntas)*100
     porcentagemDeAcertos = Math.round(porcentagemDeAcertos)
-
+    
     if (count === qtdDePerguntas) {
         exibirResultadoDoQuizz(tela2, porcentagemDeAcertos)
     } else { }
@@ -207,7 +197,7 @@ function mostrarGabarito(respostas, respostaEscolhida) {
 }
 
 function contarAcertos(respostaEscolhida) {
-
+    
     if (respostaEscolhida.classList.contains("correta")) {
         acertos++
     } else { }
@@ -217,33 +207,32 @@ function exibirResultadoDoQuizz(tela2, porcentagemDeAcertos) {
     let indiceNivel = null
     let valoresNiveis = []
     let valorNivelAtingido = null
-
+    
     niveis.forEach(nivel => {
         valoresNiveis.push(parseInt(nivel.minValue))
     })
-
-    valoresNiveis.sort(function(a, b){return a-b})
-    console.log(valoresNiveis)
-
+    
+    valoresNiveis.sort(function(a, b){return a-b}) // Organiza a lista de niveis em ordem crescente
+    
     valoresNiveis.forEach(valor => {
         if (porcentagemDeAcertos >= valor) {
             valorNivelAtingido = valor
         } else { }
     })
-
+    
     niveis.forEach(nivel => {
         if (nivel.minValue === valorNivelAtingido) {
             indiceNivel = niveis.indexOf(nivel)
         } else { }
     })
-
+    
     tela2.innerHTML += `
     <div class="resultado-quizz">
-        <div class="resultado-quizz__titulo">${niveis[indiceNivel].title}</div>
-        <img src="${niveis[indiceNivel].image}" alt="">
-        <p>${niveis[indiceNivel].text}</p>
+    <div class="resultado-quizz__titulo">${niveis[indiceNivel].title}</div>
+    <img src="${niveis[indiceNivel].image}" alt="">
+    <p>${niveis[indiceNivel].text}</p>
     </div>
-
+    
     <button class="reiniciar-quizz" onclick="reiniciarQuizz()">Reiniciar Quizz</button>
     <button class="voltar-home" onclick="voltarParaHome()">Voltar pra home</button>
     `
@@ -256,29 +245,29 @@ function exibirResultadoDoQuizz(tela2, porcentagemDeAcertos) {
 function reiniciarQuizz() {
     
     resetarVariaveisCalculoNivelAtingido()
-
+    
     const tela2 = document.querySelector(".tela-2")
     tela2.innerHTML = ""
-
+    
     habilitarTela2(quizzSelecionado)
 }
 
 function voltarParaHome() {
-
+    
     resetarVariaveisCalculoNivelAtingido()
-
+    
     const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
     const banner = document.querySelector(".banner")
     const main = document.querySelector("main")
-
+    
     tela2.innerHTML = ""
     banner.innerHTML = ""
-
+    
     tela1.classList.remove("escondido")
     tela2.classList.add("escondido")
     document.querySelector(".banner").classList.add("escondido")
-
+    
     main.scrollIntoView(true)
     windowReaload()
 }
@@ -290,9 +279,19 @@ function resetarVariaveisCalculoNivelAtingido() {
     qtdDePerguntas = null
 }
 
+function habilitarTelaCarregando() {
+    const carregando = document.querySelector(".carregando")
+    carregando.classList.remove("escondido")
+}
+
+function desabilitarTelaCarregando() {
+    const carregando = document.querySelector(".carregando")
+    carregando.classList.add("escondido")
+}
+
 function embaralharArray(minhaArray) {
     minhaArray.sort(comparador)
-
+    
     function comparador() { 
         return Math.random() - 0.5; 
     }
@@ -305,7 +304,7 @@ function habilitarTela3() {
     const tela3 = document.querySelector(".tela-3")
     tela1.classList.add("escondido")
     tela3.classList.remove("escondido")
-
+    
     if (editandoQuizz) {
         document.getElementById("quizz__titulo").value = editandoQuizzObj.title
         document.getElementById("quizz__imagemURL").value = editandoQuizzObj.image
@@ -329,6 +328,12 @@ let levels__obj = {}
 let editandoQuizz = false
 let editandoQuizzObj = null
 
+// Variaveis para validacao das informacoes básicas
+let isTituloValido = false
+let isURLValido = false
+let isPerguntasValido = false
+let isNiveisValido = false
+
 function validarInformacoes() {
     let titulo = document.getElementById("quizz__titulo").value
     let imagem = document.getElementById("quizz__imagemURL").value
@@ -336,7 +341,13 @@ function validarInformacoes() {
     let niveis = document.getElementById("quizz__niveis").value
     let url = validarURL(imagem)
 
-    if (titulo.length >= 20 && titulo.length <= 65 && url && parseInt(perguntas) >= 3 && parseInt(niveis) >= 2) {
+    validarInformacoesBasicas(titulo, imagem, perguntas, niveis, url)
+
+    if (isTituloValido && isURLValido && isPerguntasValido && isNiveisValido) {
+        habilitarPerguntas()
+    } else { }
+
+    /* if (titulo.length >= 20 && titulo.length <= 65 && url && parseInt(perguntas) >= 3 && parseInt(niveis) >= 2) {
         numero__perguntas = perguntas
         numero__niveis = niveis
         objeto.title = titulo
@@ -344,7 +355,53 @@ function validarInformacoes() {
         habilitarPerguntas()
     } else {
         document.querySelector(".informacoes p").innerHTML = "Informações inválidas"
+    }  */
+}
+
+function validarInformacoesBasicas(titulo, imagem, perguntas, niveis, url) {
+
+    if (titulo.length >= 20 && titulo.length <= 65) {
+        removerMensagemDeErro('titulo')
+        objeto.title = titulo
+        isTituloValido = true
+    } else {
+        exibirMensagemDeErro('titulo')
     }
+
+    if (url) {
+        removerMensagemDeErro('imagemURL')
+        objeto.image = imagem
+        isURLValido = true
+    } else {
+        exibirMensagemDeErro('imagemURL')
+    }
+
+    if (parseInt(perguntas) >= 3) {
+        removerMensagemDeErro('perguntas')
+        numero__perguntas = perguntas
+        isPerguntasValido = true
+    } else {
+        exibirMensagemDeErro('perguntas')
+    }
+
+    if (parseInt(niveis) >= 2) {
+        removerMensagemDeErro('niveis')
+        numero__niveis = niveis
+        isNiveisValido = true
+    } else {
+        exibirMensagemDeErro('niveis')
+    }
+}
+
+function exibirMensagemDeErro(elemento) {
+    document.getElementById(`quizz__${elemento}`).classList.add("informacao-invalida")
+    document.getElementById(`quizz__${elemento}__label`).classList.remove("escondido")
+    document.querySelector(".informacoes p").innerHTML = "Informações inválidas"
+}
+
+function removerMensagemDeErro(elemento) {
+    document.getElementById(`quizz__${elemento}`).classList.remove("informacao-invalida")
+    document.getElementById(`quizz__${elemento}__label`).classList.add("escondido")
 }
 
 function validarURL(url) {
@@ -540,15 +597,22 @@ function habilitarNiveis() {
 function mostrarNiveis() {
     for (let i = 1; i <= numero__niveis; i++) {
         document.querySelector(".niveis__geral").innerHTML += `
-        <article class="nivel guardado">
+        <article id="nivel${i}" class="nivel guardado">
             <div id="nivel__topo">
                 <h1>Nível ${i}</h1>
                 <ion-icon name="create-outline" onclick="guardarSecao(this)"></ion-icon>
             </div>
             <input type="text" id="nivel__texto" class="nivel__texto${i}" placeholder="Título do nível">
+            <label for="nivel__texto" id="nivel__texto__label" class="escondido">Título do nível deve ter no mínimo 10 caracteres</label>
+
             <input type="text" id="nivel__%" class="nivel__porcentagem${i}" placeholder="% de acerto mínima">
+            <label for="nivel__%" id="nivel__%__label" class="escondido">% de acerto mínima: um número entre 0 e 100</label>
+
             <input type="text" id="nivel__imagem" class="nivel__imagem${i}" placeholder="URL da imagem do nível">
+            <label for="nivel__imagem" id="nivel__imagem__label" class="escondido">URL inválido</label>
+
             <textarea name="descricao" id="nivel__descricao" rows="10" class="nivel__descricao${i}" placeholder="Descrição do nível"></textarea>
+            <label for="nivel__descricao" id="nivel__descricao__label" class="escondido">Descrição do nível deve ter no mínimo de 30 caracteres</label>
         </article>
         `
     }
@@ -570,7 +634,7 @@ function validarNiveis() {
     levels = []
     let niveis = document.querySelector(".niveis__geral").childNodes
 
-    for (let i = 1; i < niveis.length; i += 2) {validarNivel(niveis[i])}
+    for (let i = 1; i < niveis.length; i += 2) {validarNivel(niveis[i], i)}
 
     if (valido && porcentagem__minima) {
         objeto.levels = levels
@@ -580,27 +644,39 @@ function validarNiveis() {
     }
 }
 
-function validarNivel(nivel) {
+let isTituloNivelValido = false
+let isPorcentagemValido = false
+let isImagemNivelURLValido = false
+let isDescricaoNivelValido = false
+
+function validarNivel(nivel, i) {
     if (!valido) {
         return valido = false
     }
 
+    let j = (i+1)/2
+
     levels__obj = {}
 
     let titulo__nivel = nivel.childNodes[3].value
-    let porcentagem = nivel.childNodes[5].value
-    let imagem__nivel = nivel.childNodes[7].value
+    /* let porcentagem = nivel.childNodes[5].value */
+    let porcentagem = nivel.childNodes[7].value
+    /* let imagem__nivel = nivel.childNodes[7].value */
+    let imagem__nivel = nivel.childNodes[11].value
     let imagem__nivel__url = validarURL(imagem__nivel)
-    let descricao__nivel = nivel.childNodes[9].value
+    /* let descricao__nivel = nivel.childNodes[9].value */
+    let descricao__nivel = nivel.childNodes[15].value
 
-    if (titulo__nivel.length >= 10 && parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100 && imagem__nivel__url && descricao__nivel.length >= 30) {
+    validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__url, descricao__nivel, j)
+
+    /* if (titulo__nivel.length >= 10 && parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100 && imagem__nivel__url && descricao__nivel.length >= 30) {
         valido = true
         if (parseInt(porcentagem) === 0) {
             porcentagem__minima = true
         }
     } else {
         valido = false
-    }
+    } */
 
     porcentagemInteiro = parseInt(porcentagem)
 
@@ -609,6 +685,44 @@ function validarNivel(nivel) {
     levels__obj.text = descricao__nivel
     levels__obj.minValue = porcentagemInteiro
     levels.push(levels__obj)
+}
+
+function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__url, descricao__nivel, j) {
+    if (titulo__nivel.length >= 10) {
+        document.getElementById(`nivel${j}`).childNodes[5].classList.add("escondido")
+        isPorcentagemValido = true
+    } else {
+        document.getElementById(`nivel${j}`).childNodes[5].classList.remove("escondido")
+    }
+
+    if (parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100) {
+        document.getElementById(`nivel${j}`).childNodes[9].classList.add("escondido")
+        isTituloNivelValido = true
+    } else {
+        document.getElementById(`nivel${j}`).childNodes[9].classList.remove("escondido")
+    }
+
+    if (imagem__nivel__url) {
+        document.getElementById(`nivel${j}`).childNodes[13].classList.add("escondido")
+        isImagemNivelURLValido = true
+    } else {
+        document.getElementById(`nivel${j}`).childNodes[13].classList.remove("escondido")
+    }
+
+    if (descricao__nivel.length >= 30) {
+        document.getElementById(`nivel${j}`).childNodes[17].classList.add("escondido")
+        isDescricaoNivelValido = true
+    } else {
+        document.getElementById(`nivel${j}`).childNodes[17].classList.remove("escondido")
+    }
+
+    if (isPorcentagemValido && isTituloNivelValido && isImagemNivelURLValido && isDescricaoNivelValido) {
+        if (parseInt(porcentagem) === 0) {
+            porcentagem__minima = true
+        } else { }
+    } else {
+        valido = false
+    }
 }
 
 function habilitarSucesso() {

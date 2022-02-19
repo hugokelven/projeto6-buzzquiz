@@ -427,6 +427,19 @@ input::placeholder, textarea::placeholder {
     margin-top: 20px;
 }
 
+.informacao-invalida {
+    background-color: #FFE9E9;
+}
+
+label {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    margin: 0 0 10px 20px; 
+    align-self: flex-start;
+    color: #EC362D;
+}
+
 .criacao__pergunta__geral, .niveis__geral {
     width: 100%;
     height: 100%;
