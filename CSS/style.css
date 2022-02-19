@@ -9,7 +9,7 @@ body {
 
 header {
     position: fixed;
-    z-index: 5;
+    z-index: 6;
     top: 0;
     left: 0;
     right: 0;
@@ -496,6 +496,28 @@ input::placeholder, textarea::placeholder {
     margin-top: 20px;
 }
 
+.carregando {
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+.carregando p {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 25px;
+    line-height: 29px;
+    color: #EC362D;
+}
+
 /* UTILITÁRIOS */
 
 .escondido {
@@ -507,6 +529,7 @@ ion-icon:hover, button:hover, .quizz__criado__return:hover, header p {
 }
 
 /* MEDIA QUERY */
+
 @media (max-width: 1100px) {
 
     main {

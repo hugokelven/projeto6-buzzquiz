@@ -11,10 +11,24 @@ let qtdDePerguntas = null
 
 exibirQuizzes()
 
+function habilitarTelaCarregando() {
+    const carregando = document.querySelector(".carregando")
+    carregando.classList.remove("escondido")
+}
+
+function desabilitarTelaCarregando() {
+    const carregando = document.querySelector(".carregando")
+    carregando.classList.add("escondido")
+}
+
 function exibirQuizzes() {
+    habilitarTelaCarregando()
+
     const promessa = axios.get(QUIZZ_API)
 
     promessa.then(resposta => {
+        desabilitarTelaCarregando()
+
         const quizzes = document.querySelector(".quizzes")
         const quizzes__criados = document.querySelector(".quizzes-criados")
         quizzes.innerHTML = ""
@@ -72,6 +86,8 @@ function exibirQuizzes() {
 
 // EXIBIR PERGUNTAS DO QUIZZ SELECIONADO
 function habilitarTela2(quizz) {
+    habilitarTelaCarregando()
+
     const tela1 = document.querySelector(".tela-1")
     const tela2 = document.querySelector(".tela-2")
     const tela3 = document.querySelector(".tela-3")
@@ -84,6 +100,8 @@ function habilitarTela2(quizz) {
     const promessa = axios.get(QUIZZ_API + `${quizz.id}`)
 
     promessa.then(resposta => {
+        desabilitarTelaCarregando()
+
         const banner = document.querySelector(".banner")
         banner.classList.remove("escondido")
         let perguntas = resposta.data.questions
@@ -613,10 +631,13 @@ function habilitarSucesso() {
 }
 
 function mostrarQuizzCriado() {
+    habilitarTelaCarregando()
     let article = document.querySelector(".quizz__criado .quizz")
     let obj = null
     const promessa = axios.get(QUIZZ_API)
     promessa.then(resposta => {
+        desabilitarTelaCarregando()
+
         if (!editandoQuizz) {
             obj = resposta.data[0]
         } else {
@@ -654,6 +675,8 @@ function voltarTelaInicial() {
 }
 
 function excluirQuizz(element) {
+    habilitarTelaCarregando()
+
     if (window.confirm("Você realmente quer deletar esse quizz?")) {
         let quizz = element.parentNode.parentNode
         let key = null
@@ -669,6 +692,8 @@ function excluirQuizz(element) {
         }
         const promessa = axios.delete(QUIZZ_API + `${quizz.id}`, {headers: {"Secret-Key": key}})
         promessa.then(() => {
+            desabilitarTelaCarregando()
+
             localStorage.removeItem(`objeto${storageNumber}`)
             window.location.reload()
         })
@@ -677,10 +702,14 @@ function excluirQuizz(element) {
 }
 
 function editarQuizz(element) {
+    habilitarTelaCarregando()
+
     let quizz = element.parentNode.parentNode
     let quizzObj = null
     const promessa = axios.get(QUIZZ_API)
     promessa.then(resposta => {
+        desabilitarTelaCarregando()
+
         for (let i = 0; i < resposta.data.length; i++) {
             if (resposta.data[i].id === parseInt(quizz.id)) {
                 quizzObj = resposta.data[i]
@@ -693,6 +722,8 @@ function editarQuizz(element) {
 }
 
 function postarQuizzEditado() {
+    habilitarTelaCarregando()
+
     let quizz = editandoQuizzObj
     let key = null
     let storageNumber = null
@@ -707,6 +738,8 @@ function postarQuizzEditado() {
     }
     const promessa = axios.put(QUIZZ_API + `${quizz.id}`, objeto, { headers: { "Secret-Key": key } })
     promessa.then(resposta => {
+        desabilitarTelaCarregando()
+
         const objeto__string = JSON.stringify(resposta.data)
         localStorage.setItem(`objeto${storageNumber}`, objeto__string)
         window.scrollTo({top: 0, behavior: 'smooth'})
