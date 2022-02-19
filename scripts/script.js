@@ -351,9 +351,12 @@ function habilitarPerguntas() {
 function mostrarPerguntas() {
     for (let i = 1; i <= numero__perguntas; i++) {
         document.querySelector(".criacao__pergunta__geral").innerHTML += `
-        <article class="criacao__pergunta">
-    
-            <h1>Pergunta ${i}</h1>
+        <article class="criacao__pergunta guardado">
+
+            <div id="criacao__pergunta__topo">
+                <h1>Pergunta ${i}</h1>
+                <ion-icon name="create-outline" onclick="guardarSecao(this)"></ion-icon>
+            </div>
             <div>
                 <input type="text" id="pergunta__texto" class="pergunta__texto${i}" placeholder="Texto da pergunta">
                 <input type="text" id="pergunta__cor" class="pergunta__cor${i}" placeholder="Cor de fundo da pergunta">
@@ -519,8 +522,11 @@ function habilitarNiveis() {
 function mostrarNiveis() {
     for (let i = 1; i <= numero__niveis; i++) {
         document.querySelector(".niveis__geral").innerHTML += `
-        <article class="nivel">
-            <h1>Nível ${i}</h1>
+        <article class="nivel guardado">
+            <div id="nivel__topo">
+                <h1>Nível ${i}</h1>
+                <ion-icon name="create-outline" onclick="guardarSecao(this)"></ion-icon>
+            </div>
             <input type="text" id="nivel__texto" class="nivel__texto${i}" placeholder="Título do nível">
             <input type="text" id="nivel__%" class="nivel__porcentagem${i}" placeholder="% de acerto mínima">
             <input type="text" id="nivel__imagem" class="nivel__imagem${i}" placeholder="URL da imagem do nível">
@@ -722,4 +728,20 @@ function postarQuizzEditado() {
 
 function windowReaload() {
     window.location.reload()
+}
+
+function guardarSecao(element) {
+    let article = element.parentNode.parentNode
+    article.classList.toggle("guardado")
+    if (article.classList.contains("guardado")) {
+        article.style.height = "74px"
+        element.setAttribute("name", "create-outline")
+    } else {
+        if (article.classList.contains("criacao__pergunta")) {
+            article.style.height = "895px"
+        } else {
+            article.style.height = "439px"
+        }
+        element.setAttribute("name", "contract-outline")
+    }
 }

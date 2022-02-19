@@ -377,7 +377,7 @@ h4 {
 }
 
 input {
-    height: 46px;
+    min-height: 46px;
     width: 100%;
     font-size: 19px;
     margin: 0 0 9px;
@@ -445,6 +445,8 @@ input::placeholder, textarea::placeholder {
     padding: 27px 18px;
     margin-bottom: 24px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    transition: height 0.5s;
+    overflow: hidden;
 }
 
 .criacao__pergunta h1, .nivel h1 {
@@ -461,6 +463,27 @@ input::placeholder, textarea::placeholder {
 
 .criacao__pergunta input {
     margin-bottom: 14px;
+}
+
+.criacao__pergunta.guardado, .nivel.guardado {
+    height: 74px;
+}
+
+#criacao__pergunta__topo, #nivel__topo{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 24px;
+}
+
+#criacao__pergunta__topo h1, #nivel__topo h1 {
+    margin: 0;
+}
+
+#criacao__pergunta__topo ion-icon, #nivel__topo ion-icon {
+    font-size: 26px;
 }
 
 .nivel {
