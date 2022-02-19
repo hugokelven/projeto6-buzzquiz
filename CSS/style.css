@@ -365,7 +365,7 @@ h4 {
 }
 
 .informacoes div {
-    height: 256px;
+    padding: 0 0 12px;
     width: 100%;
     max-width: 600px;
     display: flex;

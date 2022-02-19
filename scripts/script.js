@@ -346,16 +346,6 @@ function validarInformacoes() {
     if (isTituloValido && isURLValido && isPerguntasValido && isNiveisValido) {
         habilitarPerguntas()
     } else { }
-
-    /* if (titulo.length >= 20 && titulo.length <= 65 && url && parseInt(perguntas) >= 3 && parseInt(niveis) >= 2) {
-        numero__perguntas = perguntas
-        numero__niveis = niveis
-        objeto.title = titulo
-        objeto.image = imagem
-        habilitarPerguntas()
-    } else {
-        document.querySelector(".informacoes p").innerHTML = "Informações inválidas"
-    }  */
 }
 
 function validarInformacoesBasicas(titulo, imagem, perguntas, niveis, url) {
@@ -659,24 +649,12 @@ function validarNivel(nivel, i) {
     levels__obj = {}
 
     let titulo__nivel = nivel.childNodes[3].value
-    /* let porcentagem = nivel.childNodes[5].value */
     let porcentagem = nivel.childNodes[7].value
-    /* let imagem__nivel = nivel.childNodes[7].value */
     let imagem__nivel = nivel.childNodes[11].value
     let imagem__nivel__url = validarURL(imagem__nivel)
-    /* let descricao__nivel = nivel.childNodes[9].value */
     let descricao__nivel = nivel.childNodes[15].value
 
     validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__url, descricao__nivel, j)
-
-    /* if (titulo__nivel.length >= 10 && parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100 && imagem__nivel__url && descricao__nivel.length >= 30) {
-        valido = true
-        if (parseInt(porcentagem) === 0) {
-            porcentagem__minima = true
-        }
-    } else {
-        valido = false
-    } */
 
     porcentagemInteiro = parseInt(porcentagem)
 
@@ -693,6 +671,7 @@ function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__
         isPorcentagemValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[5].classList.remove("escondido")
+        isPorcentagemValido = false
     }
 
     if (parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100) {
@@ -700,6 +679,7 @@ function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__
         isTituloNivelValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[9].classList.remove("escondido")
+        isTituloNivelValido = false
     }
 
     if (imagem__nivel__url) {
@@ -707,6 +687,7 @@ function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__
         isImagemNivelURLValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[13].classList.remove("escondido")
+        isImagemNivelURLValido = false
     }
 
     if (descricao__nivel.length >= 30) {
@@ -714,6 +695,7 @@ function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__
         isDescricaoNivelValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[17].classList.remove("escondido")
+        isDescricaoNivelValido = false
     }
 
     if (isPorcentagemValido && isTituloNivelValido && isImagemNivelURLValido && isDescricaoNivelValido) {
