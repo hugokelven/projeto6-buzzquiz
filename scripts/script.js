@@ -416,7 +416,7 @@ function habilitarPerguntas() {
 function mostrarPerguntas() {
     for (let i = 1; i <= numero__perguntas; i++) {
         document.querySelector(".criacao__pergunta__geral").innerHTML += `
-        <article class="criacao__pergunta guardado">
+        <article id="pergunta${i}" class="criacao__pergunta guardado">
 
             <div id="criacao__pergunta__topo">
                 <h1>Pergunta ${i}</h1>
@@ -424,27 +424,37 @@ function mostrarPerguntas() {
             </div>
             <div>
                 <input type="text" id="pergunta__texto" class="pergunta__texto${i}" placeholder="Texto da pergunta">
+                <label for="pergunta__texto" id="pergunta__texto__label" class="escondido">Texto da pergunta deve ter no mínimo 20 caracteres</label>
                 <input type="text" id="pergunta__cor" class="pergunta__cor${i}" placeholder="Cor de fundo da pergunta">
+                <label for="pergunta__cor" id="pergunta__cor__label" class="escondido">Cor de fundo deve ser uma cor em hexadecimal</label>
             </div>
 
             <h1>Resposta correta</h1>
             <div>
                 <input type="text" id="correta__texto" class="correta__texto${i}" placeholder="Resposta correta">
+                <label for="correta__texto" id="correta__texto__label" class="escondido">Não pode estar vazio</label>
                 <input type="text" id="correta__url" class="correta__url${i}" placeholder="URL da imagem">
+                <label for="correta__url" id="correta__url__label" class="escondido">URL inválido</label>
             </div>
 
             <h1>Respostas incorretas</h1>
             <div>
                 <input type="text" id="incorreta1__texto" class="incorreta1__texto${i}" placeholder="Resposta incorreta 1">
+                <label for="incorreta1__texto" id="incorreta1__texto__label" class="escondido">Não pode estar vazio</label>
                 <input type="text" id="incorreta1__url" class="incorreta1__url${i}" placeholder="URL da imagem 1">
+                <label for="incorreta1__url" id="incorreta1__url__label" class="escondido">URL inválido</label>
             </div>
             <div>
                 <input type="text" id="incorreta2__texto" class="incorreta2__texto${i}" placeholder="Resposta incorreta 2">
+                <label for="incorreta2__texto" id="incorreta2__texto__label" class="escondido">Não pode estar vazio</label>
                 <input type="text" id="incorreta2__url" class="incorreta2__url${i}" placeholder="URL da imagem 2">
+                <label for="incorreta2__url" id="incorreta2__url__label" class="escondido">URL inválido</label>
             </div>
             <div>
                 <input type="text" id="incorreta3__texto" class="incorreta3__texto${i}" placeholder="Resposta incorreta 3">
+                <label for="incorreta3__texto" id="incorreta3__texto__label" class="escondido">Não pode estar vazio</label>
                 <input type="text" id="incorreta3__url" class="incorreta3__url${i}" placeholder="URL da imagem 3">
+                <label for="incorreta3__url" id="incorreta3__url__label" class="escondido">URL inválido</label>
             </div>
 
         </article>
@@ -482,7 +492,7 @@ function validarPerguntas() {
     questions = []
     let perguntas = document.querySelector(".criacao__pergunta__geral").childNodes
 
-    for (let i = 1; i < perguntas.length; i += 2) {validarPergunta(perguntas[i])}
+    for (let i = 1; i < perguntas.length; i += 2) {validarPergunta(perguntas[i], i)}
 
     if (valido === true) {
         objeto.questions = questions
@@ -492,37 +502,196 @@ function validarPerguntas() {
     }
 }
 
-function validarPergunta(pergunta) {
+function validarPergunta(pergunta, i) {
     if (!valido) {
         return valido = false
     }
+
+    j = (i + 1)/2
 
     answers = []
     questions__obj = {}
     let answer = {}
 
     let texto__pergunta = pergunta.childNodes[3].childNodes[1].value
-    let cor__pergunta = pergunta.childNodes[3].childNodes[3].value
+    let cor__pergunta = pergunta.childNodes[3].childNodes[5].value
     let cor__valida = reg.test(cor__pergunta)
 
     let correta = pergunta.childNodes[7].childNodes[1].value
-    let correta__url = pergunta.childNodes[7].childNodes[3].value
+    let correta__url = pergunta.childNodes[7].childNodes[5].value
     let correta__URL = validarURL(correta__url)
 
     let incorreta1 = pergunta.childNodes[11].childNodes[1].value
-    let incorreta1__url = pergunta.childNodes[11].childNodes[3].value
+    let incorreta1__url = pergunta.childNodes[11].childNodes[5].value
     let incorreta1__URL = validarURL(incorreta1__url)
 
     let incorreta2 = pergunta.childNodes[13].childNodes[1].value
-    let incorreta2__url = pergunta.childNodes[13].childNodes[3].value
+    let incorreta2__url = pergunta.childNodes[13].childNodes[5].value
     let incorreta2__URL = validarURL(incorreta2__url)
 
     let incorreta3 = pergunta.childNodes[15].childNodes[1].value
-    let incorreta3__url = pergunta.childNodes[15].childNodes[3].value
+    let incorreta3__url = pergunta.childNodes[15].childNodes[5].value
     let incorreta3__URL = validarURL(incorreta3__url)
 
-    if (texto__pergunta.length >= 20 && cor__valida && correta !== "" && correta__URL && incorreta1 !== "" && incorreta1__URL) {
+    let isTextoPerguntaValido = false
+    let isCorPerguntaValido = false
+    let isCorretaValido = false
+    let isCorretaURLValido = false
+    let isIncorreta1Valido = false
+    let isIncorreta1URLValido = false
+    let isIncorreta2Valido = false
+    let isIncorreta2urlValido = false
+    let isIncorreta2URLValido = false
+    let isIncorreta3Valido = false
+    let isIncorreta3urlValido = false
+    let isIncorreta3URLValido = false
 
+    if (texto__pergunta.length >= 20) {
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[3].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[1].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[1].style.marginBottom = '14px'
+        isTextoPerguntaValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[3].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[1].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[1].style.marginBottom = 0
+        isTextoPerguntaValido = false
+    }
+
+    if (cor__valida) {
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[5].style.marginBottom = '14px'
+        isCorPerguntaValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[3].childNodes[5].style.marginBottom = 0
+        isCorPerguntaValido = false
+    }
+
+    if (correta !== "") {
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[3].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[1].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[1].style.marginBottom = '14px'
+        isCorretaValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[3].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[1].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[1].style.marginBottom = 0
+        isCorretaValido = false
+    }
+
+    if (correta__URL) {
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[5].style.marginBottom = '14px'
+        isCorretaURLValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[7].childNodes[5].style.marginBottom = 0
+        isCorretaURLValido = false
+    }
+
+    if (incorreta1 !== "") {
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[3].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[1].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[1].style.marginBottom = '14px'
+        isIncorreta1Valido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[3].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[1].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[1].style.marginBottom = 0
+        isIncorreta1Valido = false
+    }
+
+    if (incorreta1__URL) {
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[5].style.marginBottom = '14px'
+        isIncorreta1URLValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[5].style.marginBottom = 0
+        isIncorreta1URLValido = false
+    }
+
+    if (incorreta2 !== "") {
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[3].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[1].style.marginBottom = '14px'
+        isIncorreta2Valido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[3].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[1].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[1].style.marginBottom = 0
+        isIncorreta2Valido = false
+    }
+
+    if (incorreta2__url !== "") {
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].style.marginBottom = '14px'
+        isIncorreta2urlValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].style.marginBottom = 0
+        isIncorreta2urlValido = false
+    }
+
+    if (incorreta2__URL) {
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].style.marginBottom = '14px'
+        isIncorreta2URLValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].style.marginBottom = 0
+        isIncorreta2URLValido = false
+    }
+
+    if (incorreta3 !== "") {
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[3].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[1].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[1].style.marginBottom = '14px'
+        isIncorreta3Valido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[3].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[1].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[1].style.marginBottom = 0
+        isIncorreta3Valido = false
+    }
+
+    if (incorreta3__url !== "") {
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = '14px'
+        isIncorreta3urlValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = 0
+        isIncorreta3urlValido = false
+    }
+
+    if (incorreta3__URL) {
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[7].classList.add("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = '14px'
+        isIncorreta3URLValido = true
+    } else {
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[7].classList.remove("escondido")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.add("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = 0
+        isIncorreta3URLValido = false
+    }
+
+    if (isTextoPerguntaValido && isCorPerguntaValido && isCorretaValido && isCorretaURLValido && isIncorreta1Valido && isIncorreta1URLValido) {
+        
         answer.text = correta
         answer.image = correta__url
         answer.isCorrectAnswer = true
@@ -535,9 +704,9 @@ function validarPergunta(pergunta) {
         answers.push(answer)
         answer = {}
 
-        if ((incorreta2 === "" && incorreta2__url === "") && (incorreta3 === "" && incorreta3__url === "")) {
+        if ((!isIncorreta2Valido && !isIncorreta2urlValido) && (!isIncorreta3Valido && !isIncorreta3urlValido)) {
             valido = true
-        } else if ((incorreta2 !== "" && incorreta2__URL) && (incorreta3 === "" && incorreta3__url === "")) {
+        } else if ((isIncorreta2Valido && isIncorreta2URLValido) && (!isIncorreta3Valido && !isIncorreta3urlValido)) {
             valido = true
 
             answer.text = incorreta2
@@ -545,10 +714,9 @@ function validarPergunta(pergunta) {
             answer.isCorrectAnswer = false
             answers.push(answer)
             answer = {}
-
-        } else if ((incorreta2 === "" && incorreta2__url === "") && (incorreta3 !== "" && incorreta3__URL)) {
+        } else if ((!isIncorreta2Valido && !isIncorreta2urlValido) && (isIncorreta3Valido && isIncorreta3URLValido)) {
             return valido = false
-        } else if ((incorreta2 !== "" && incorreta2__URL) && (incorreta3 !== "" && incorreta3__URL)) {
+        } else if ((isIncorreta2Valido && isIncorreta2URLValido) && (isIncorreta3Valido && isIncorreta3URLValido)) {
             valido = true
 
             answer.text = incorreta2
@@ -562,7 +730,6 @@ function validarPergunta(pergunta) {
             answer.isCorrectAnswer = false
             answers.push(answer)
             answer = {}
-
         } else {
             return valido = false
         }
@@ -668,33 +835,41 @@ function validarNivel(nivel, i) {
 function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__url, descricao__nivel, j) {
     if (titulo__nivel.length >= 10) {
         document.getElementById(`nivel${j}`).childNodes[5].classList.add("escondido")
+        document.getElementById(`nivel${j}`).childNodes[3].classList.remove("informacao-invalida")
         isPorcentagemValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[5].classList.remove("escondido")
+        document.getElementById(`nivel${j}`).childNodes[3].classList.add("informacao-invalida")
         isPorcentagemValido = false
     }
 
     if (parseInt(porcentagem) >= 0 && parseInt(porcentagem) <= 100) {
         document.getElementById(`nivel${j}`).childNodes[9].classList.add("escondido")
+        document.getElementById(`nivel${j}`).childNodes[7].classList.remove("informacao-invalida")
         isTituloNivelValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[9].classList.remove("escondido")
+        document.getElementById(`nivel${j}`).childNodes[7].classList.add("informacao-invalida")
         isTituloNivelValido = false
     }
 
     if (imagem__nivel__url) {
         document.getElementById(`nivel${j}`).childNodes[13].classList.add("escondido")
+        document.getElementById(`nivel${j}`).childNodes[11].classList.remove("informacao-invalida")
         isImagemNivelURLValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[13].classList.remove("escondido")
+        document.getElementById(`nivel${j}`).childNodes[11].classList.add("informacao-invalida")
         isImagemNivelURLValido = false
     }
 
     if (descricao__nivel.length >= 30) {
         document.getElementById(`nivel${j}`).childNodes[17].classList.add("escondido")
+        document.getElementById(`nivel${j}`).childNodes[15].classList.remove("informacao-invalida")
         isDescricaoNivelValido = true
     } else {
         document.getElementById(`nivel${j}`).childNodes[17].classList.remove("escondido")
+        document.getElementById(`nivel${j}`).childNodes[15].classList.add("informacao-invalida")
         isDescricaoNivelValido = false
     }
 
@@ -867,7 +1042,7 @@ function guardarSecao(element) {
         element.setAttribute("name", "create-outline")
     } else {
         if (article.classList.contains("criacao__pergunta")) {
-            article.style.height = "895px"
+            article.style.height = "fit-content"
         } else {
             article.style.height = "439px"
         }
