@@ -503,10 +503,6 @@ function validarPerguntas() {
 }
 
 function validarPergunta(pergunta, i) {
-    if (!valido) {
-        return valido = false
-    }
-
     j = (i + 1)/2
 
     answers = []
@@ -618,9 +614,9 @@ function validarPergunta(pergunta, i) {
         isIncorreta1URLValido = false
     }
 
-    if (incorreta2 !== "") {
+    if (incorreta2 !== "" || (incorreta2 === "" && incorreta2__url === "")) {
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[3].classList.add("escondido")
-        document.getElementById(`pergunta${j}`).childNodes[11].childNodes[5].classList.remove("informacao-invalida")
+        document.getElementById(`pergunta${j}`).childNodes[13].childNodes[1].classList.remove("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[1].style.marginBottom = '14px'
         isIncorreta2Valido = true
     } else {
@@ -630,7 +626,7 @@ function validarPergunta(pergunta, i) {
         isIncorreta2Valido = false
     }
 
-    if (incorreta2__url !== "") {
+    if (incorreta2__url !== "" || (incorreta2 === "" && incorreta2__url === "")) {
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[7].classList.add("escondido")
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].classList.remove("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].style.marginBottom = '14px'
@@ -642,7 +638,7 @@ function validarPergunta(pergunta, i) {
         isIncorreta2urlValido = false
     }
 
-    if (incorreta2__URL) {
+    if (incorreta2__URL || (incorreta2 === "" && incorreta2__url === "")) {
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[7].classList.add("escondido")
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].classList.remove("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[13].childNodes[5].style.marginBottom = '14px'
@@ -654,7 +650,7 @@ function validarPergunta(pergunta, i) {
         isIncorreta2URLValido = false
     }
 
-    if (incorreta3 !== "") {
+    if ((incorreta3 !== "" && incorreta2 !== "" && incorreta2__url !== "") || (incorreta3 === "" && incorreta3__url === "")) {
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[3].classList.add("escondido")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[1].classList.remove("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[1].style.marginBottom = '14px'
@@ -666,7 +662,7 @@ function validarPergunta(pergunta, i) {
         isIncorreta3Valido = false
     }
 
-    if (incorreta3__url !== "") {
+    if ((incorreta3__url !== "" && incorreta2 !== "" && incorreta2__url !== "") || (incorreta3 === "" && incorreta3__url === "")) {
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[7].classList.add("escondido")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.remove("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = '14px'
@@ -678,7 +674,7 @@ function validarPergunta(pergunta, i) {
         isIncorreta3urlValido = false
     }
 
-    if (incorreta3__URL) {
+    if ((incorreta3__URL && incorreta2 !== "" && incorreta2__url !== "") || (incorreta3 === "" && incorreta3__url === "")) {
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[7].classList.add("escondido")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.remove("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = '14px'
@@ -688,6 +684,10 @@ function validarPergunta(pergunta, i) {
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].classList.add("informacao-invalida")
         document.getElementById(`pergunta${j}`).childNodes[15].childNodes[5].style.marginBottom = 0
         isIncorreta3URLValido = false
+    }
+
+    if (!valido) {
+        return valido = false
     }
 
     if (isTextoPerguntaValido && isCorPerguntaValido && isCorretaValido && isCorretaURLValido && isIncorreta1Valido && isIncorreta1URLValido) {
@@ -704,9 +704,9 @@ function validarPergunta(pergunta, i) {
         answers.push(answer)
         answer = {}
 
-        if ((!isIncorreta2Valido && !isIncorreta2urlValido) && (!isIncorreta3Valido && !isIncorreta3urlValido)) {
+        if ((incorreta2 === "" && incorreta2__url === "") && (incorreta3 === "" && incorreta3__url === "")) {
             valido = true
-        } else if ((isIncorreta2Valido && isIncorreta2URLValido) && (!isIncorreta3Valido && !isIncorreta3urlValido)) {
+        } else if ((incorreta2 !== "" && incorreta2__URL) && (incorreta3 === "" && incorreta3__url === "")) {
             valido = true
 
             answer.text = incorreta2
@@ -714,9 +714,9 @@ function validarPergunta(pergunta, i) {
             answer.isCorrectAnswer = false
             answers.push(answer)
             answer = {}
-        } else if ((!isIncorreta2Valido && !isIncorreta2urlValido) && (isIncorreta3Valido && isIncorreta3URLValido)) {
+        } else if ((!isIncorreta2Valido && !isIncorreta2URLValido) && (isIncorreta3Valido && isIncorreta3URLValido)) {
             return valido = false
-        } else if ((isIncorreta2Valido && isIncorreta2URLValido) && (isIncorreta3Valido && isIncorreta3URLValido)) {
+        } else if ((incorreta2 !== "" && incorreta2__URL) && (incorreta3 !== "" && incorreta3__URL)) {
             valido = true
 
             answer.text = incorreta2
@@ -807,10 +807,6 @@ let isImagemNivelURLValido = false
 let isDescricaoNivelValido = false
 
 function validarNivel(nivel, i) {
-    if (!valido) {
-        return valido = false
-    }
-
     let j = (i+1)/2
 
     levels__obj = {}
@@ -871,6 +867,10 @@ function validarInformacoesDosNiveis(titulo__nivel, porcentagem, imagem__nivel__
         document.getElementById(`nivel${j}`).childNodes[17].classList.remove("escondido")
         document.getElementById(`nivel${j}`).childNodes[15].classList.add("informacao-invalida")
         isDescricaoNivelValido = false
+    }
+
+    if (!valido) {
+        return valido = false
     }
 
     if (isPorcentagemValido && isTituloNivelValido && isImagemNivelURLValido && isDescricaoNivelValido) {
@@ -1042,7 +1042,7 @@ function guardarSecao(element) {
         element.setAttribute("name", "create-outline")
     } else {
         if (article.classList.contains("criacao__pergunta")) {
-            article.style.height = "fit-content"
+            article.style.height = "975px"
         } else {
             article.style.height = "439px"
         }
