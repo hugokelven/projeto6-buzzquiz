@@ -774,7 +774,7 @@ function mostrarNiveis() {
         `
     }
     if (editandoQuizz) {
-        for (let i = 1; i <= numero__perguntas; i++) {
+        for (let i = 1; i <= numero__niveis; i++) {
             if (typeof editandoQuizzObj.levels[i - 1] !== "undefined") {
                 document.querySelector(`.nivel__texto${i}`).value = editandoQuizzObj.levels[i - 1].title
                 document.querySelector(`.nivel__porcentagem${i}`).value = editandoQuizzObj.levels[i - 1].minValue
