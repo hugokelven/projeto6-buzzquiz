@@ -24,20 +24,20 @@
         <section class="tela-1">
             <div class="sem-quizzes-criados">
                 <p>Você não criou nenhum quizz ainda :(</p>
-                <button onclick="habilitarTela3()">Criar Quizz</button>
+                <button data-identifier="create-quizz" onclick="habilitarTela3()">Criar Quizz</button>
             </div>
 
-            <div class="com-quizzes-criados escondido">
+            <div data-identifier="user-quizzes" class="com-quizzes-criados escondido">
                 <div>
                     <h1>Seus Quizzes</h1>
-                    <ion-icon name="add-circle" onclick="habilitarTela3()"></ion-icon>
+                    <ion-icon data-identifier="create-quizz" name="add-circle" onclick="habilitarTela3()"></ion-icon>
                 </div>
                 <div class="quizzes-criados"></div>
             </div>
     
             <h4>Todos os Quizzes</h4>
     
-            <div class="quizzes"><!-- Carregado no JS --></div>
+            <div data-identifier="general-quizzes" class="quizzes"><!-- Carregado no JS --></div>
         </section>
 
         <!-- Tela 2 -->

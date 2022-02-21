@@ -36,7 +36,7 @@ function exibirQuizzes() {
         
         resposta.data.forEach(quizz => {
             quizzes.innerHTML += `
-            <article id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
+            <article data-identifier="quizz-card" id="${quizz.id}" onclick="habilitarTela2(this)" class="quizz">
             <div class="degrade"></div>
             <img src="${quizz.image}" alt="quizz">
             <p>${quizz.title}</p>
@@ -50,7 +50,7 @@ function exibirQuizzes() {
                         let localQuizz = JSON.parse(localQuizzString)
                         if (quizz.id === localQuizz.id) {
                             quizzes__criados.innerHTML += `
-                            <article id="${quizz.id}" class="quizz">
+                            <article data-identifier="quizz-card" id="${quizz.id}" class="quizz">
                             <div class="degrade" onclick="habilitarTela2(this.parentNode)"></div>
                             <img src="${quizz.image}" alt="quizz">
                             <div class="editar__excluir">
@@ -122,7 +122,7 @@ function gerarPerguntas(perguntas) {
         let respostas = pergunta.answers
         
         tela2.innerHTML += `
-        <div id="pergunta_${indiceDaPergunta}" class="pergunta">
+        <div data-identifier="question" id="pergunta_${indiceDaPergunta}" class="pergunta">
         <div class="pergunta__titulo" style="background-color: ${pergunta.color};">${pergunta.title}</div>
         </div>
         `
@@ -149,7 +149,7 @@ function gerarRespostas(respostas, perguntaGerada) {
         }
         
         perguntaGerada.innerHTML += `
-        <div class="pergunta__resposta ${isRespostaCorreta}" onclick="selecionarResposta(this)">
+        <div data-identifier="answer" class="pergunta__resposta ${isRespostaCorreta}" onclick="selecionarResposta(this)">
         <img src=${resposta.image} alt="">
         <p>${resposta.text}</p>
         </div>
@@ -227,7 +227,7 @@ function exibirResultadoDoQuizz(tela2, porcentagemDeAcertos) {
     })
     
     tela2.innerHTML += `
-    <div class="resultado-quizz">
+    <div data-identifier="quizz-result" class="resultado-quizz">
     <div class="resultado-quizz__titulo">${niveis[indiceNivel].title}</div>
     <img src="${niveis[indiceNivel].image}" alt="">
     <p>${niveis[indiceNivel].text}</p>
@@ -416,11 +416,11 @@ function habilitarPerguntas() {
 function mostrarPerguntas() {
     for (let i = 1; i <= numero__perguntas; i++) {
         document.querySelector(".criacao__pergunta__geral").innerHTML += `
-        <article id="pergunta${i}" class="criacao__pergunta guardado">
+        <article data-identifier="question" id="pergunta${i}" class="criacao__pergunta guardado">
 
             <div id="criacao__pergunta__topo">
                 <h1>Pergunta ${i}</h1>
-                <ion-icon name="create-outline" onclick="guardarSecao(this)"></ion-icon>
+                <ion-icon data-identifier="expand" name="create-outline" onclick="guardarSecao(this)"></ion-icon>
             </div>
             <div>
                 <input type="text" id="pergunta__texto" class="pergunta__texto${i}" placeholder="Texto da pergunta">
@@ -754,10 +754,10 @@ function habilitarNiveis() {
 function mostrarNiveis() {
     for (let i = 1; i <= numero__niveis; i++) {
         document.querySelector(".niveis__geral").innerHTML += `
-        <article id="nivel${i}" class="nivel guardado">
+        <article data-identifier="level" id="nivel${i}" class="nivel guardado">
             <div id="nivel__topo">
                 <h1>Nível ${i}</h1>
-                <ion-icon name="create-outline" onclick="guardarSecao(this)"></ion-icon>
+                <ion-icon data-identifier="expand" name="create-outline" onclick="guardarSecao(this)"></ion-icon>
             </div>
             <input type="text" id="nivel__texto" class="nivel__texto${i}" placeholder="Título do nível">
             <label for="nivel__texto" id="nivel__texto__label" class="escondido">Título do nível deve ter no mínimo 10 caracteres</label>
@@ -929,7 +929,7 @@ function mostrarQuizzCriado() {
 
         article.setAttribute("id", obj.id)
         article.innerHTML = `
-        <div class="degrade"></div>
+        <div class="degrade" style="height: 100%;"></div>
         <img src="${obj.image}" alt="quizz">
         <p>${obj.title}</p>
         `
